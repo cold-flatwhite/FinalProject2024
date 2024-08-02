@@ -1,4 +1,4 @@
-import { View, TextInput, Text } from "react-native";
+import { View, TextInput, Text, StyleSheet } from "react-native";
 import React, { useState } from "react";
 
 export default function ProviderScreen() {
@@ -7,30 +7,66 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [price, setPrice] = useState("");
   return (
-    <View>
-      <View>
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
         <Text>Name</Text>
-        <TextInput placeholder="Name" value={name} onChangeText={setName} />
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
       </View>
 
-      <View>
+      <View style={styles.inputContainer}>
         <Text>Address</Text>
         <TextInput
+          style={styles.input}
           placeholder="Address"
           value={address}
           onChangeText={setAddress}
         />
       </View>
 
-      <View>
+      <View style={styles.inputContainer}>
         <Text>Email</Text>
-        <TextInput placeholder="Email" value={email} onChangeText={setEmail} />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
-      <View>
+      <View style={styles.inputContainer}>
         <Text>Price</Text>
-        <TextInput placeholder="Price" value={price} onChangeText={setPrice} />
+        <TextInput
+          style={styles.input}
+          placeholder="Price"
+          value={price}
+          onChangeText={setPrice}
+        />
       </View>
     </View>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: "#fff",
+  },
+  inputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginLeft: 8,
+    paddingLeft: 8,
+  },
+});
