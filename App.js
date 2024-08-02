@@ -1,23 +1,27 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import { addDoc, collection } from "firebase/firestore"; 
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import SearchScreen from "./screens/SearchScreen";
+import OrderScreen from "./screens/OrderScreen";
+import ProviderScreen from "./screens/ProviderScreen";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
+
+const TabStack = () => {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Provider" component={ProviderScreen} />
+      <Tab.Screen name="Order" component={OrderScreen} />
+    </Tab.Navigator>
+  );
+};
 
 export default function App() {
-  
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <TabStack />
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
