@@ -1,4 +1,4 @@
-import { View, TextInput, Text, StyleSheet } from "react-native";
+import { View, TextInput, Text, StyleSheet, Image } from "react-native";
 import React, { useState } from "react";
 
 export default function ProviderScreen() {
@@ -6,8 +6,17 @@ export default function ProviderScreen() {
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [price, setPrice] = useState("");
+
   return (
     <View style={styles.container}>
+      <View style={styles.imageContainer}>
+        <Image
+          style={styles.image}
+          source={require("../assets/petcare.jpg")}
+          alt="Local Icon"
+        />
+      </View>
+
       <View style={styles.inputContainer}>
         <Text>Name</Text>
         <TextInput
@@ -68,5 +77,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginLeft: 8,
     paddingLeft: 8,
+  },
+  image: {
+    width: 150,
+    height: 150,
+  },
+  imageContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom : 10,
   },
 });
