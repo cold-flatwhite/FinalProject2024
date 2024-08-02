@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import styles from '../styles';
 
 const orders = [
   {
     id: 1,
     provider: 'Brandyn',
     client: 'Xin',
-    service: 'Door to door cat feeding Jul 10',
+    service: 'Door to door cat feeding',
     status: 'Ongoing',
     dateRange: 'July 10-17',
     email: 'xxx@xxx.ca',
@@ -38,7 +39,7 @@ export default function OrderScreen() {
         <TouchableOpacity
           key={order.id}
           style={styles.orderContainer}
-          onPress={() => navigation.navigate('OrderInfo', { order })}
+          onPress={() => navigation.navigate('Order Information', { order })}
         >
           <Image source={{ uri: order.image }} style={styles.image} />
           <View>
@@ -51,45 +52,3 @@ export default function OrderScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  orderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  image: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 10,
-  },
-  provider: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  providerTag: {
-    backgroundColor: 'yellow',
-  },
-  service: {
-    fontSize: 16,
-  },
-  ongoing: {
-    color: 'red',
-  },
-  complete: {
-    color: 'green',
-  },
-});

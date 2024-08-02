@@ -24,8 +24,8 @@ const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Tabs" component={TabStack} options={{ headerShown: false }} />
-        <Stack.Screen name="OrderInfo" component={OrderInfoScreen} />
+        <Stack.Screen name="My orders" component={TabStack} options={{ headerShown: false }} />
+        <Stack.Screen name="Order Information" component={OrderInfoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
