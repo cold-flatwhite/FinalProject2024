@@ -1,15 +1,8 @@
-import {
-  View,
-  TextInput,
-  Text,
-  StyleSheet,
-  Image,
-  Switch,
-  Button,
-} from "react-native";
+import { View, TextInput, Text, StyleSheet, Image, Switch } from "react-native";
 import React, { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import PressableButton from "../components/PressableButton";
+import PressableButton from "../component/PressableButton";
+import { writeToDB } from "../firebase/firebaseHelper";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -25,7 +18,43 @@ export default function ProviderScreen() {
     { label: "Breed 2", value: "breed2" },
   ]);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    if (!name || !address || !email || !price || breedPreference === null) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    // Validate price to be a number
+    const priceNumber = parseFloat(price);
+    if (isNaN(priceNumber) || priceNumber <= 0) {
+      alert("Please enter a valid price.");
+      return;
+    }
+    const data = {
+      name,
+      address,
+      email,
+      price: priceNumber,
+      breedPreference,
+      experience,
+      openForWork,
+    };
+
+    try {
+      await writeToDB(data, "providers");
+      alert("Data submitted successfully!");
+    } catch (error) {
+      console.error("Error writing document: ", error);
+      alert("Error submitting data.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -159,11 +188,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   buttonContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });

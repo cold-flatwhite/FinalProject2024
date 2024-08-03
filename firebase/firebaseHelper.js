@@ -1,5 +1,5 @@
-import { collection, addDoc } from "firebase/firestore";
-import { database } from "./FirebaseSetup";
+import { collection, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { database } from "./firebaseSetup";
 
 // Add a new document with a generated id.
 export async function writeToDB(data, collectionName) {

@@ -8,7 +8,7 @@ const PressableButton = ({ children, pressedFunction, componentStyle }) => {
       style={({ pressed }) => [
         styles.defaultStyle,
         componentStyle,
-        pressed && styles.pressableStyle
+        pressed && styles.pressableStyle,
       ]}
     >
       <View>{children}</View>
@@ -21,17 +21,17 @@ export default PressableButton;
 const styles = StyleSheet.create({
   defaultStyle: {
     padding: 5,
-    backgroundColor: '#0a9396',
+    backgroundColor: "#0a9396",
     borderRadius: 25,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5, 
-    alignItems: 'center',
+    elevation: 5,
+    alignItems: "center",
   },
   pressableStyle: {
-    backgroundColor: '#005f73',
+    backgroundColor: "#005f73",
     transform: [{ scale: 0.95 }],
   },
 });
