@@ -1,6 +1,14 @@
-import { View, TextInput, Text, StyleSheet, Image,Switch } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Image,
+  Switch,
+  Button,
+} from "react-native";
 import React, { useState } from "react";
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -12,22 +20,20 @@ export default function ProviderScreen() {
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
   const [items, setItems] = useState([
-    { label: 'Breed 1', value: 'breed1' },
-    { label: 'Breed 2', value: 'breed2' },
-    
+    { label: "Breed 1", value: "breed1" },
+    { label: "Breed 2", value: "breed2" },
   ]);
+
+  const handleSubmit = () => {};
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require("../assets/petcare.jpg")}
-          alt="Local Icon"
-        />
+        <Image style={styles.image} source={require("../assets/petcare.jpg")} />
       </View>
 
       <View style={styles.inputContainer}>
-        <Text>Name</Text>
+        <Text style={styles.label}>Name</Text>
         <TextInput
           style={styles.input}
           placeholder="Name"
@@ -37,7 +43,7 @@ export default function ProviderScreen() {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text>Address</Text>
+        <Text style={styles.label}>Address</Text>
         <TextInput
           style={styles.input}
           placeholder="Address"
@@ -47,7 +53,7 @@ export default function ProviderScreen() {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text>Email</Text>
+        <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -57,7 +63,7 @@ export default function ProviderScreen() {
       </View>
 
       <View style={styles.inputContainer}>
-        <Text>Price</Text>
+        <Text style={styles.label}>Price</Text>
         <TextInput
           style={styles.input}
           placeholder="Price"
@@ -65,8 +71,9 @@ export default function ProviderScreen() {
           onChangeText={setPrice}
         />
       </View>
+
       <View style={styles.inputContainer}>
-        <Text>Breed Preference</Text>
+        <Text style={styles.label}>Breed Preference</Text>
         <DropDownPicker
           open={open}
           value={breedPreference}
@@ -75,29 +82,27 @@ export default function ProviderScreen() {
           setValue={setBreedPreference}
           setItems={setItems}
           placeholder="Select breed preference"
-        />
-      </View>
-      <View style={styles.switchContainer}>
-        <Text>Experience</Text>
-        <Switch
-          value={experience}
-          onValueChange={setExperience}
+          style={styles.dropdown}
+          containerStyle={styles.dropdownContainer}
         />
       </View>
 
       <View style={styles.switchContainer}>
-        <Text>Open for work</Text>
-        <Switch
-          value={openForWork}
-          onValueChange={setOpenForWork}
-        />
+        <Text style={styles.label}>Experience</Text>
+        <Switch value={experience} onValueChange={setExperience} />
       </View>
 
+      <View style={styles.switchContainer}>
+        <Text style={styles.label}>Open for work</Text>
+        <Switch value={openForWork} onValueChange={setOpenForWork} />
+      </View>
+      <View>
+        <Button title="Register" onPress={handleSubmit} />
+      </View>
     </View>
-
-
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -109,28 +114,45 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 16,
   },
-  input: {
+  label: {
     flex: 1,
+    fontSize: 16,
+    fontWeight: "bold",
+    marginRight: 8,
+  },
+  input: {
+    flex: 2,
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
-    marginLeft: 8,
     paddingLeft: 8,
+    borderRadius: 5,
   },
   image: {
-    width: 150,
-    height: 150,
+    width: 100,
+    height: 100,
+    borderRadius: 75,
   },
   imageContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom : 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
   },
-
+  dropdown: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingLeft: 8,
+    borderRadius: 5,
+  },
+  dropdownContainer: {
+    height: 40,
+    flex: 2,
+  },
   switchContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 16,
   },
 });
