@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
+import PressableButton from "../components/PressableButton";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -96,8 +97,10 @@ export default function ProviderScreen() {
         <Text style={styles.label}>Open for work</Text>
         <Switch value={openForWork} onValueChange={setOpenForWork} />
       </View>
-      <View>
-        <Button title="Register" onPress={handleSubmit} />
+      <View style={styles.buttonContainer}>
+        <PressableButton pressedFunction={handleSubmit}>
+          <Text style={styles.buttonText}>Register</Text>
+        </PressableButton>
       </View>
     </View>
   );
@@ -154,5 +157,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 16,
+  },
+  buttonContainer: {
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
