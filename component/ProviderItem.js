@@ -9,8 +9,7 @@ export default function ProviderItem({ provider }) {
     <View key={provider.id} style={styles.card}>
       <Pressable
         onPress={() => {
-          // Navigate to Provider detail screen if needed
-          // navigation.navigate('ProviderDetail', { provider });
+          
         }}
       >
         <View style={styles.headerRow}>
@@ -99,16 +98,17 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   serviceTag: {
-    backgroundColor: "green",
-    borderRadius: 5,
+    backgroundColor: "#333333", 
+    borderRadius: 8,             
     paddingHorizontal: 12,
-    paddingVertical: 3,
+    paddingVertical: 2,         
     margin: 4,
     fontSize: 12,
-    color: "white",
+    color: "#ffffff",            
+    borderColor: "#4f4f4f",      
+    borderWidth: 1,         
     overflow: "hidden",
-    fontWeight : "bold"
-  },
-
-  
+    fontWeight: "bold",
+    textAlign: "center",     
+  }
 });
