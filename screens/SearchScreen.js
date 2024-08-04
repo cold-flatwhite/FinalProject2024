@@ -8,6 +8,7 @@ import ProviderItem from "../component/ProviderItem";
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
   const collectionName = "providers";
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(database, collectionName),
@@ -29,6 +30,7 @@ export default function SearchScreen() {
         <Text>Map</Text>
       </View>
       <View style={styles.bottomContainer}>
+        <Text>Avaiable Providers</Text>
         {providers.length === 0 ? (
           <Text>There is no providers</Text>
         ) : (

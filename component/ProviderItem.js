@@ -9,24 +9,33 @@ export default function ProviderItem({ provider }) {
     <View key={provider.id} style={styles.card}>
       <Pressable
         onPress={() => {
-            navigation.replace('PostOrderScreen', { provider });
+          navigation.replace("PostOrderScreen", { provider });
         }}
       >
         <View style={styles.headerRow}>
           <Text style={styles.name}>{provider.name}</Text>
-          <View style={[
-            styles.experienceBox,
-            provider.experience ? styles.experienced : styles.noExperience
-          ]}>
+          <View
+            style={[
+              styles.experienceBox,
+              provider.experience ? styles.experienced : styles.noExperience,
+            ]}
+          >
             <Text style={styles.experienceText}>
               {provider.experience ? "Experienced" : "No Experience"}
             </Text>
           </View>
-          <Text style={styles.price}>${provider.price}</Text>
         </View>
         <View style={styles.body}>
-          <Text style={styles.address}>{provider.address}</Text>
-          <Text style={styles.info}>Email: {provider.email}</Text>
+          <Text style={styles.address}>Address: {provider.address}</Text>
+          {provider.openForWork && provider.services.length > 0 && (
+            <View style={styles.servicesTags}>
+              {provider.services.map((service, index) => (
+                <Text key={index} style={styles.serviceTag}>
+                  {service}
+                </Text>
+              ))}
+            </View>
+          )}
         </View>
       </Pressable>
     </View>
@@ -35,25 +44,25 @@ export default function ProviderItem({ provider }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 15,
     marginVertical: 10,
     marginHorizontal: 20,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 5,
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   name: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     flex: 2,
   },
   experienceBox: {
@@ -64,30 +73,42 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   experienced: {
-    backgroundColor: 'green',
+    backgroundColor: "green",
   },
   noExperience: {
-    backgroundColor: 'gray',
+    backgroundColor: "gray",
   },
   experienceText: {
-    color: 'white',
-    fontSize: 10,
-    textAlign: 'center',
-  },
-  price: {
-    fontSize: 18,
-    color: 'green',
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'right',
+    color: "white",
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: "bold",
   },
   body: {
     marginTop: 5,
   },
   address: {
     fontSize: 14,
+    marginBottom: 5,
+    fontWeight: "bold",
   },
-  info: {
-    fontSize: 14,
+
+  servicesTags: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  serviceTag: {
+    backgroundColor: "#333333",
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    margin: 4,
+    fontSize: 12,
+    color: "#ffffff",
+    borderColor: "#4f4f4f",
+    borderWidth: 1,
+    overflow: "hidden",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
