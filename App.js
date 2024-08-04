@@ -26,7 +26,7 @@ const TabStack = () => {
         }}
       />
       <Tab.Screen
-        name="Provider"
+        name=" Provider"
         component={ProviderScreen}
         options={{
           tabBarIcon: ({ color, size }) => (

@@ -3,6 +3,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { database } from "../firebase/firebaseSetup";
 import { collection, onSnapshot } from "firebase/firestore";
+import ProviderItem from "../component/ProviderItem";
 
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
@@ -33,9 +34,10 @@ export default function SearchScreen() {
         ) : (
           <FlatList
             renderItem={({ item }) => {
-              return <Text>{item.address}</Text>;
+              return <ProviderItem provider={item} />;
             }}
             data={providers}
+            keyExtractor={item => item.id}
           />
         )}
       </View>
@@ -68,6 +70,6 @@ const styles = StyleSheet.create({
   bottomContainer: {
     flex: 1,
     backgroundColor: "#dcd",
-    alignItems: "center",
+    paddingHorizontal: 10,
   },
 });
