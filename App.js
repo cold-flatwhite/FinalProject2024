@@ -37,6 +37,7 @@ const TabStack = () => {
               color="black"
             />
           ),
+          title : 'Sign Up as a Petcare Provider'
         }}
       />
       <Tab.Screen
