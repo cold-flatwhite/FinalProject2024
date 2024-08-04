@@ -1,5 +1,5 @@
 import { View, TextInput, Text, StyleSheet, Image, Switch, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PressableButton from "../component/PressableButton";
 import { writeToDB } from "../firebase/firebaseHelper";
 
@@ -16,6 +16,13 @@ export default function ProviderScreen() {
     { label: "Grooming", value: "grooming", selected: false },
     { label: "Training", value: "training", selected: false }
   ]);
+
+
+  useEffect(() => {
+    if (!openForWork) {
+      setServices(services.map(service => ({ ...service, selected: false })));
+    }
+  }, [openForWork]);
 
   const handleServiceToggle = (index) => {
     const updatedServices = services.map((service, i) => {
