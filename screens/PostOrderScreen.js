@@ -3,84 +3,127 @@ import {
   View,
   Text,
   TextInput,
-  StyleSheet,
   Pressable,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import DropDownPicker from "react-native-dropdown-picker";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation, useRoute } from "@react-navigation/native";
 
 export default function PostOrderScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { provider } = route.params; // Get provider from route params
+  const { provider } = route.params;
 
   const [request, setRequest] = useState("Dog Walk");
   const [breed, setBreed] = useState("Terrier");
-  const [date, setDate] = useState("2024-07-01");
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  const [requestOpen, setRequestOpen] = useState(false);
+  const [breedOpen, setBreedOpen] = useState(false);
+
+  const requestItems = [
+    { label: "Dog Walk", value: "Dog Walk" },
+    { label: "Pet Sitting", value: "Pet Sitting" },
+    { label: "Vet Visit", value: "Vet Visit" },
+  ];
+
+  const breedItems = [
+    { label: "Terrier", value: "Terrier" },
+    { label: "Labrador", value: "Labrador" },
+    { label: "Poodle", value: "Poodle" },
+  ];
+
+  const onChangeDate = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+  };
+
+  const showDatepicker = () => {
+    setShowDatePicker(true);
+  };
+
+  const dismissKeyboard = () => {
+    Keyboard.dismiss();
+    setShowDatePicker(false);
+  };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Post Order</Text>
-      
-      <View style={styles.providerInfoContainer}>
-        <Text style={styles.providerName}>{provider.name}</Text>
-        <Text style={styles.providerExperience}>
-          {provider.experience ? "Experienced" : "No Experience"}
-        </Text>
-        <Text style={styles.providerPrice}>Price: ${provider.price}</Text>
-      </View>
+    <TouchableWithoutFeedback onPress={dismissKeyboard}>
+      <View style={styles.container}>
 
-      <Text style={styles.label}>Request</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={request}
-          onValueChange={(itemValue) => setRequest(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Dog Walk" value="Dog Walk" />
-          <Picker.Item label="Pet Sitting" value="Pet Sitting" />
-          <Picker.Item label="Vet Visit" value="Vet Visit" />
-        </Picker>
-      </View>
+        {/* Provider Information */}
+        <View style={styles.providerInfoContainer}>
+          <Text style={styles.providerName}>{provider.name}</Text>
+          <Text style={styles.providerExperience}>
+            {provider.experience ? "Experienced" : "No Experience"}
+          </Text>
+          <Text style={styles.providerPrice}>Price: ${provider.price}</Text>
+        </View>
 
-      <Text style={styles.label}>Breed</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={breed}
-          onValueChange={(itemValue) => setBreed(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Terrier" value="Terrier" />
-          <Picker.Item label="Labrador" value="Labrador" />
-          <Picker.Item label="Poodle" value="Poodle" />
-        </Picker>
-      </View>
+        <Text style={styles.label}>Request</Text>
+        <DropDownPicker
+          open={requestOpen}
+          value={request}
+          items={requestItems}
+          setOpen={setRequestOpen}
+          setValue={setRequest}
+          setItems={() => {}}
+          style={styles.dropdown}
+          placeholder="Select a request"
+        />
 
-      <Text style={styles.label}>Date</Text>
-      <TextInput
-        style={styles.input}
-        value={date}
-        onChangeText={setDate}
-        placeholder="YYYY-MM-DD"
-      />
+        <Text style={styles.label}>Breed</Text>
+        <DropDownPicker
+          open={breedOpen}
+          value={breed}
+          items={breedItems}
+          setOpen={setBreedOpen}
+          setValue={setBreed}
+          setItems={() => {}}
+          style={styles.dropdown}
+          placeholder="Select a breed"
+        />
 
-      <View style={styles.buttonRow}>
-        <Pressable
-          style={[styles.button, styles.cancelButton]}
-          onPress={() => navigation.goBack()}
-        >
-          <Text style={styles.buttonText}>Cancel</Text>
-        </Pressable>
-        <Pressable
-          style={[styles.button, styles.confirmButton]}
-          onPress={() => {
-            // Add logic to handle confirm action
-          }}
-        >
-          <Text style={styles.buttonText}>Confirm</Text>
-        </Pressable>
+        <Text style={styles.label}>Date</Text>
+        <TextInput
+          style={styles.input}
+          value={date.toISOString().split("T")[0]}
+          onFocus={showDatepicker}
+          showSoftInputOnFocus={false} // Prevent keyboard from opening
+        />
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="inline"
+            onChange={onChangeDate}
+          />
+        )}
+
+        <View style={styles.buttonRow}>
+          <Pressable
+            style={[styles.button, styles.cancelButton]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text style={styles.buttonText}>Cancel</Text>
+          </Pressable>
+          <Pressable
+            style={[styles.button, styles.confirmButton]}
+            onPress={() => {
+              // Add logic to handle confirm action
+            }}
+          >
+            <Text style={styles.buttonText}>Confirm</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 
@@ -98,6 +141,8 @@ const styles = StyleSheet.create({
   },
   providerInfoContainer: {
     marginBottom: 20,
+    alignItems : "center",
+    flexDirection: 'row',
   },
   providerName: {
     fontSize: 20,
@@ -105,7 +150,7 @@ const styles = StyleSheet.create({
   },
   providerExperience: {
     fontSize: 16,
-    color: 'green',
+    color: "green",
   },
   providerPrice: {
     fontSize: 16,
@@ -116,16 +161,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 10,
   },
-  pickerContainer: {
-    borderWidth: 1,
+  dropdown: {
+    marginBottom: 15,
     borderColor: "#ccc",
-    borderRadius: 5,
-    marginBottom: 10,
-    overflow: "hidden",
-  },
-  picker: {
-    width: "100%",
-    height: 40,
   },
   input: {
     borderWidth: 1,
