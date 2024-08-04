@@ -51,7 +51,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
   },
   name: {
     fontSize: 18,
@@ -84,13 +83,12 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   body: {
-    marginTop: 10,
+    marginTop: 5,
   },
   address: {
-    fontSize: 16,
-    marginBottom: 5,
+    fontSize: 14,
   },
   info: {
-    fontSize: 16,
+    fontSize: 14,
   },
 });
