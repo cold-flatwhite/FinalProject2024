@@ -7,11 +7,9 @@ export default function ProviderItem({ provider }) {
 
   return (
     <View key={provider.id} style={styles.card}>
-      <Pressable
-        onPress={() => {
-          
-        }}
-      >
+      <Pressable onPress={() => {
+        navigation.navigate('PostOrderScreen', { provider });
+      }}>
         <View style={styles.headerRow}>
           <Text style={styles.name}>{provider.name}</Text>
           <View
@@ -82,7 +80,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 12,
     textAlign: "center",
-    fontWeight : "bold",
+    fontWeight: "bold",
   },
   body: {
     marginTop: 5,
@@ -90,7 +88,7 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 14,
     marginBottom: 5,
-    fontWeight : "bold"
+    fontWeight: "bold",
   },
 
   servicesTags: {
@@ -98,17 +96,17 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   serviceTag: {
-    backgroundColor: "#333333", 
-    borderRadius: 8,             
+    backgroundColor: "#333333",
+    borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 2,         
+    paddingVertical: 2,
     margin: 4,
     fontSize: 12,
-    color: "#ffffff",            
-    borderColor: "#4f4f4f",      
-    borderWidth: 1,         
+    color: "#ffffff",
+    borderColor: "#4f4f4f",
+    borderWidth: 1,
     overflow: "hidden",
     fontWeight: "bold",
-    textAlign: "center",     
-  }
+    textAlign: "center",
+  },
 });
