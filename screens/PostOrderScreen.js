@@ -55,7 +55,6 @@ export default function PostOrderScreen() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-
         {/* Provider Information */}
         <View style={styles.providerInfoContainer}>
           <Text style={styles.providerName}>{provider.name}</Text>
@@ -109,7 +108,7 @@ export default function PostOrderScreen() {
         <View style={styles.buttonRow}>
           <Pressable
             style={[styles.button, styles.cancelButton]}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.replace("My orders")}
           >
             <Text style={styles.buttonText}>Cancel</Text>
           </Pressable>
@@ -140,9 +139,18 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   providerInfoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 20,
-    alignItems : "center",
-    flexDirection: 'row',
+    padding: 15,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
   },
   providerName: {
     fontSize: 20,
