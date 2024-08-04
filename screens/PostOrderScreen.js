@@ -17,19 +17,18 @@ export default function PostOrderScreen() {
   const route = useRoute();
   const { provider } = route.params;
 
-  const [request, setRequest] = useState("Dog Walk");
-  const [breed, setBreed] = useState("Terrier");
+  const requestItems = provider.services.map(service => ({
+    label: service,
+    value: service,
+  }));
+
+  const [request, setRequest] = useState("");
+  const [breed, setBreed] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [requestOpen, setRequestOpen] = useState(false);
   const [breedOpen, setBreedOpen] = useState(false);
-
-  const requestItems = [
-    { label: "Dog Walk", value: "Dog Walk" },
-    { label: "Pet Sitting", value: "Pet Sitting" },
-    { label: "Vet Visit", value: "Vet Visit" },
-  ];
 
   const breedItems = [
     { label: "Terrier", value: "Terrier" },
@@ -55,13 +54,18 @@ export default function PostOrderScreen() {
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
-        {/* Provider Information */}
         <View style={styles.providerInfoContainer}>
           <Text style={styles.providerName}>{provider.name}</Text>
           <Text style={styles.providerExperience}>
             {provider.experience ? "Experienced" : "No Experience"}
           </Text>
-          <Text style={styles.providerPrice}>Price: ${provider.price}</Text>
+          <Text style={styles.providerAddress}>Adress  : {provider.address}</Text>
+          <Text style={styles.providerContact}>
+            Contact: {provider.email}
+          </Text>
+          <Text style={styles.providerServices}>
+            Services: {provider.services.join(", ")}
+          </Text>
         </View>
 
         <Text style={styles.label}>Request</Text>
@@ -74,6 +78,8 @@ export default function PostOrderScreen() {
           setItems={() => {}}
           style={styles.dropdown}
           placeholder="Select a request"
+          zIndex={1000}
+          zIndexInverse={1000}
         />
 
         <Text style={styles.label}>Breed</Text>
@@ -86,6 +92,8 @@ export default function PostOrderScreen() {
           setItems={() => {}}
           style={styles.dropdown}
           placeholder="Select a breed"
+          zIndex={999}
+          zIndexInverse={999}
         />
 
         <Text style={styles.label}>Date</Text>
@@ -93,15 +101,16 @@ export default function PostOrderScreen() {
           style={styles.input}
           value={date.toISOString().split("T")[0]}
           onFocus={showDatepicker}
-          showSoftInputOnFocus={false} // Prevent keyboard from opening
+          showSoftInputOnFocus={false}
         />
 
         {showDatePicker && (
           <DateTimePicker
             value={date}
             mode="date"
-            display="inline"
+            display="default"
             onChange={onChangeDate}
+            style={styles.datePicker}
           />
         )}
 
@@ -130,56 +139,65 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    alignSelf: "center",
+    backgroundColor: "#f5f5f5",
   },
   providerInfoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-    padding: 15,
+    padding: 20,
     backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
+    shadowRadius: 4,
+    elevation: 2,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
   },
   providerName: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
+    color: "#333",
+    marginBottom: 8,
   },
   providerExperience: {
     fontSize: 16,
-    color: "green",
+    color: "#4CAF50",
+    marginBottom: 8,
   },
-  providerPrice: {
+  providerAddress: {
     fontSize: 16,
-    fontWeight: "bold",
+    color: "#555",
+    marginBottom: 8,
+  },
+  providerContact: {
+    fontSize: 16,
+    color: "#555",
+    marginBottom: 8,
+  },
+  providerServices: {
+    fontSize: 16,
+    color: "#555",
   },
   label: {
     fontSize: 16,
     fontWeight: "bold",
-    marginTop: 10,
+    marginVertical: 10,
+    color: "#333",
   },
   dropdown: {
-    marginBottom: 15,
     borderColor: "#ccc",
+    borderRadius: 8,
+    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 5,
+    borderRadius: 8,
     height: 40,
     paddingHorizontal: 10,
     marginBottom: 20,
+    backgroundColor: "#fff",
   },
   buttonRow: {
     flexDirection: "row",
@@ -187,20 +205,24 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    padding: 10,
-    borderRadius: 5,
+    padding: 12,
+    borderRadius: 8,
     alignItems: "center",
   },
   cancelButton: {
-    backgroundColor: "red",
+    backgroundColor: "#FF5722",
     marginRight: 10,
   },
   confirmButton: {
-    backgroundColor: "green",
+    backgroundColor: "#4CAF50",
     marginLeft: 10,
   },
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
+  },
+  datePicker: {
+    width: '100%',
+    marginTop: 20,
   },
 });
