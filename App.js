@@ -9,6 +9,7 @@ import OrderInfoScreen from "./screens/OrderInfoScreen";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import PostOrderScreen from "./screens/PostOrderScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -36,16 +37,18 @@ const TabStack = () => {
               color="black"
             />
           ),
+          title : 'Sign Up as a Petcare Provider'
         }}
       />
-      <Tab.Screen name="My Orders" component={OrderScreen} 
-      options={
-        {
-          tabBarIcon : ({color, size}) => (
+      <Tab.Screen
+        name="My Orders"
+        component={OrderScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
             <FontAwesome name="history" size={24} color="black" />
-          )
-        }
-      }/>
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -60,6 +63,7 @@ const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Order Information" component={OrderInfoScreen} />
+        <Stack.Screen name="PostOrderScreen" component={PostOrderScreen}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

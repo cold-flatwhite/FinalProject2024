@@ -7,7 +7,12 @@ export default function ProviderItem({ provider }) {
 
   return (
     <View key={provider.id} style={styles.card}>
-      <Pressable onPress={() => {}}>
+      <Pressable
+        onPress={() => {
+          // Navigate to Provider detail screen if needed
+          // navigation.navigate('ProviderDetail', { provider });
+        }}
+      >
         <View style={styles.headerRow}>
           <Text style={styles.name}>{provider.name}</Text>
           <View
