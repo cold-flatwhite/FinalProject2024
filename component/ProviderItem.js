@@ -9,8 +9,7 @@ export default function ProviderItem({ provider }) {
     <View key={provider.id} style={styles.card}>
       <Pressable
         onPress={() => {
-          // Navigate to Provider detail screen if needed
-          // navigation.navigate('ProviderDetail', { provider });
+            navigation.navigate('PostOrderScreen', { provider });
         }}
       >
         <View style={styles.headerRow}>
