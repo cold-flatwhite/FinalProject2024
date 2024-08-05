@@ -1,7 +1,17 @@
-import { View, TextInput, Text, StyleSheet, Image, Switch, ScrollView } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Image,
+  Switch,
+  ScrollView,
+  Alert,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
-import { writeToDB } from "../firebase/firebaseHelper";
+import { writeToDB, getFromDB, updateToDB } from "../firebase/FirebaseHelper";
+import { auth } from "../firebase/FirebaseSetup";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -9,18 +19,54 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
+  const [registeredProvider, setRegisteredProvider] = useState(false);
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
     { label: "Pet Sitting", value: "petSitting", selected: false },
     { label: "Grooming", value: "grooming", selected: false },
-    { label: "Training", value: "training", selected: false }
+    { label: "Training", value: "training", selected: false },
   ]);
 
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert("Error", "No user logged in");
+        return;
+      }
+
+      const userId = user.uid;
+      try {
+        const userProfile = await getFromDB(userId, "users");
+        if (userProfile) {
+          setName(userProfile.name || "");
+          setAddress(userProfile.address || "");
+          setEmail(userProfile.email || "");
+          setExperience(userProfile.experience || false);
+          setOpenForWork(userProfile.openForWork || false);
+          setRegisteredProvider(userProfile.registeredProvider || false);
+
+          if (userProfile.services) {
+            setServices(
+              services.map((service) => ({
+                ...service,
+                selected: userProfile.services.includes(service.value),
+              }))
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user profile", error);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
 
   useEffect(() => {
     if (!openForWork) {
-      setServices(services.map(service => ({ ...service, selected: false })));
+      setServices(services.map((service) => ({ ...service, selected: false })));
     }
   }, [openForWork]);
 
@@ -47,7 +93,9 @@ export default function ProviderScreen() {
       return;
     }
 
-    const selectedServices = services.filter(service => service.selected).map(service => service.value);
+    const selectedServices = services
+      .filter((service) => service.selected)
+      .map((service) => service.value);
 
     const data = {
       name,
@@ -55,12 +103,27 @@ export default function ProviderScreen() {
       email,
       experience,
       openForWork,
-      services: selectedServices
+      services: selectedServices,
+      registeredProvider: true,
     };
 
     try {
-      await writeToDB(data, "providers");
-      alert("Data submitted successfully!");
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert("Error", "No user logged in");
+        return;
+      }
+
+      const userId = user.uid;
+
+      if (registeredProvider) {
+        await updateToDB(userId, "providers", data);
+        alert("Data updated successfully!");
+      } else {
+        await writeToDB(data, "providers", userId);
+        await updateToDB(userId, "users", { registeredProvider: true });
+        alert("Data submitted successfully!");
+      }
     } catch (error) {
       console.error("Error writing document: ", error);
       alert("Error submitting data.");
