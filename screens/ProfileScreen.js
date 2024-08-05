@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Text, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Text, StyleSheet, Alert, Pressable } from "react-native";
 import { getFromDB, setToDB, updateToDB } from "../firebase/FirebaseHelper";
-import { auth } from "../firebase/FirebaseSetup";
+import { auth } from "../firebase/FirebaseSetup"; // Import signOut function
 import PressableButton from "../components/PressableButton";
-
+import { useNavigation } from '@react-navigation/native';
+import { signOut } from "firebase/auth";
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [registeredProvider, setRegisteredProvider] = useState(false);
+  const navigation = useNavigation(); // Get navigation prop
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -30,16 +32,26 @@ const ProfileScreen = () => {
       }
     };
     loadProfile();
-  }, []);
+
+    // Add sign out button to header
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable
+          style={styles.signOutButton}
+          onPress={handleSignOut}
+        >
+          <Text style={styles.signOutButtonText}>Sign Out</Text>
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   const handleUpdate = async () => {
-    // Validation checks
     if (!name || !address || !email) {
       Alert.alert("Validation Error", "Please fill in all required fields.");
       return;
     }
 
-    // Email validation
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
       Alert.alert("Validation Error", "Please enter a valid email address.");
@@ -57,10 +69,8 @@ const ProfileScreen = () => {
 
       const existingProfile = await getFromDB(userId, "users");
       if (existingProfile) {
-        // Update existing profile
         await updateToDB(userId, "users", userProfile);
       } else {
-        // Create new profile
         await setToDB(userProfile, "users", userId);
       }
 
@@ -68,6 +78,17 @@ const ProfileScreen = () => {
     } catch (error) {
       console.error("Error updating profile data", error);
       Alert.alert("Error", "Error updating profile.");
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth); // Call Firebase signOut function
+      Alert.alert("Success", "You have been signed out.");
+      navigation.navigate('Login'); // Navigate to Login screen or other appropriate screen
+    } catch (error) {
+      console.error("Error signing out", error);
+      Alert.alert("Error", "Error signing out.");
     }
   };
 
@@ -134,6 +155,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  signOutButton: {
+    marginRight: 10,
+  },
+  signOutButtonText: {
+    color: "red",
     fontSize: 16,
     fontWeight: "bold",
   },

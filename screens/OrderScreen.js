@@ -17,25 +17,23 @@ export default function OrderScreen() {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
   const collectionName = "orders";
+  const currentUserID = auth.currentUser.uid;
 
   useEffect(() => {
     const fetchUserData = async (order) => {
       try {
-        const currentUserID = auth.currentUser.uid;
         let providerData = null;
         let userData = null;
         let orderType = "";
 
         if (order.provider_id === currentUserID) {
-          userData = (
-            await getDoc(doc(database, "users", order.user_id))
-          ).data();
+          userData = (await getDoc(doc(database, "users", order.user_id))).data();
           orderType = "received";
         } else if (order.user_id === currentUserID) {
-          providerData = (
-            await getDoc(doc(database, "users", order.provider_id))
-          ).data();
+          providerData = (await getDoc(doc(database, "users", order.provider_id))).data();
           orderType = "post";
+        } else {
+          return null; 
         }
 
         return {
@@ -58,7 +56,9 @@ export default function OrderScreen() {
         for (const docSnapshot of querySnapshot.docs) {
           const orderData = docSnapshot.data();
           const orderWithUserData = await fetchUserData(orderData);
-          ordersArray.push({ ...orderWithUserData, id: docSnapshot.id });
+          if (orderWithUserData) {
+            ordersArray.push({ ...orderWithUserData, id: docSnapshot.id });
+          }
         }
         setOrders(ordersArray);
         setLoading(false);
