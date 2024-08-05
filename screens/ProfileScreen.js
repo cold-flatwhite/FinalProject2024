@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Image, Pressable } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, TextInput, Text, StyleSheet, Alert } from 'react-native';
+import { getFromDB, setToDB, updateToDB } from '../firebase/firebaseHelper'; 
+import { auth } from '../firebase/firebaseSetup'; 
 import PressableButton from '../components/PressableButton';
 
 const ProfileScreen = () => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   useEffect(() => {
     const loadProfile = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert('Error', 'No user logged in');
+        return;
+      }
+      const userId = user.uid;
       try {
-        const savedName = await AsyncStorage.getItem('name');
-        const savedAddress = await AsyncStorage.getItem('address');
-        const savedEmail = await AsyncStorage.getItem('email');
-        const savedPassword = await AsyncStorage.getItem('password');
-        if (savedName) setName(savedName);
-        if (savedAddress) setAddress(savedAddress);
-        if (savedEmail) setEmail(savedEmail);
-        if (savedPassword) setPassword(savedPassword);
+        const userProfile = await getFromDB(userId, 'users');
+        if (userProfile) {
+          setName(userProfile.name || '');
+          setAddress(userProfile.address || '');
+          setEmail(userProfile.email || '');
+        }
       } catch (error) {
         console.error("Error loading profile data", error);
       }
@@ -28,21 +32,33 @@ const ProfileScreen = () => {
   }, []);
 
   const handleUpdate = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      Alert.alert('Error', 'No user logged in');
+      return;
+    }
+    const userId = user.uid;
     try {
-      await AsyncStorage.setItem('name', name);
-      await AsyncStorage.setItem('address', address);
-      await AsyncStorage.setItem('email', email);
-      await AsyncStorage.setItem('password', password);
-      alert('Profile updated successfully!');
+      const userProfile = { name, address, email };
+      
+      const existingProfile = await getFromDB(userId, 'users');
+      if (existingProfile) {
+        // Update existing profile
+        await updateToDB(userId, 'users', userProfile);
+      } else {
+        // Create new profile
+        await setToDB(userProfile, 'users', userId);
+      }
+
+      Alert.alert('Success', 'Profile updated successfully!');
     } catch (error) {
       console.error("Error updating profile data", error);
-      alert('Error updating profile.');
+      Alert.alert('Error', 'Error updating profile.');
     }
   };
 
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={{ uri: 'https://path_to_your_image/user-icon.png' }} />
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Name</Text>
         <TextInput
@@ -70,16 +86,6 @@ const ProfileScreen = () => {
           onChangeText={setEmail}
         />
       </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-        />
-      </View>
       <PressableButton pressedFunction={handleUpdate}>
         <Text style={styles.buttonText}>Update</Text>
       </PressableButton>
@@ -92,19 +98,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#fff',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    alignSelf: 'center',
-    marginBottom: 20,
   },
   inputContainer: {
     flexDirection: 'row',
