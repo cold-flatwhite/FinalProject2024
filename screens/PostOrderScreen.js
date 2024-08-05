@@ -7,10 +7,13 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { writeToDB } from "../firebase/FirebaseHelper";
+import { auth } from "../firebase/FirebaseSetup";
 
 export default function PostOrderScreen() {
   const navigation = useNavigation();
@@ -51,6 +54,32 @@ export default function PostOrderScreen() {
     setShowDatePicker(false);
   };
 
+  const handleConfirm = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert("Error", "No user logged in");
+        return;
+      }
+
+      const orderData = {
+        request,
+        breed,
+        date: date.toISOString(),
+        user_id: user.uid,
+        provider_id: provider.id, 
+      };
+
+      await writeToDB(orderData, "orders");
+      Alert.alert("Success", "Order placed successfully!");
+      navigation.replace("Order Information");
+    } catch (error) {
+      console.error("Error placing order: ", error);
+      Alert.alert("Error", "Failed to place order.");
+    }
+  };
+
+
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
@@ -66,7 +95,6 @@ export default function PostOrderScreen() {
             Adress : {provider.address}
           </Text>
           <Text style={styles.providerContact}>Contact: {provider.email}</Text>
-
         </View>
 
         <Text style={styles.label}>Request</Text>
@@ -118,15 +146,13 @@ export default function PostOrderScreen() {
         <View style={styles.buttonRow}>
           <Pressable
             style={[styles.button, styles.cancelButton]}
-            onPress={() => navigation.replace("My orders")}
+            onPress={() => navigation.replace("Main")}
           >
             <Text style={styles.buttonText}>Cancel</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.confirmButton]}
-            onPress={() => {
-              // Add logic to handle confirm action
-            }}
+            onPress={handleConfirm}
           >
             <Text style={styles.buttonText}>Confirm</Text>
           </Pressable>
@@ -154,8 +180,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ddd",
   },
-  name : {
-    flexDirection : 'row',
+  name: {
+    flexDirection: "row",
     justifyContent: "space-between",
   },
   providerName: {
