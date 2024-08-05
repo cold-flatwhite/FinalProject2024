@@ -9,7 +9,6 @@ const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
-  const [registeredProvider, setRegisteredProvider] = useState(false);
   const navigation = useNavigation(); // Get navigation prop
 
   useEffect(() => {
@@ -65,7 +64,7 @@ const ProfileScreen = () => {
     }
     const userId = user.uid;
     try {
-      const userProfile = { name, address, email, registeredProvider };
+      const userProfile = { name, address, email };
 
       const existingProfile = await getFromDB(userId, "users");
       if (existingProfile) {
