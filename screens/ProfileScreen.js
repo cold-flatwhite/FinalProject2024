@@ -8,6 +8,7 @@ const ProfileScreen = () => {
   const [name, setName] = useState('');
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
+  const [registeredProvider, setRegisteredProvider] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -39,7 +40,7 @@ const ProfileScreen = () => {
     }
     const userId = user.uid;
     try {
-      const userProfile = { name, address, email };
+      const userProfile = { name, address, email, registeredProvider};
       
       const existingProfile = await getFromDB(userId, 'users');
       if (existingProfile) {
