@@ -1,6 +1,6 @@
 import { View, TextInput, Text, StyleSheet, Image, Switch, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
-import PressableButton from "../component/PressableButton";
+import PressableButton from "../components/PressableButton";
 import { writeToDB } from "../firebase/firebaseHelper";
 
 export default function ProviderScreen() {
