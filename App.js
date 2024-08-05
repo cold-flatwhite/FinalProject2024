@@ -7,6 +7,8 @@ import OrderScreen from './screens/OrderScreen';
 import ProviderScreen from './screens/ProviderScreen';
 import OrderInfoScreen from './screens/OrderInfoScreen';
 import ProfileScreen from './screens/ProfileScreen';
+import LoginScreen from './screens/LoginScreen';
+import SignupScreen from './screens/SignupScreen';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
@@ -77,6 +79,8 @@ const App = () => {
           headerRight: () => <UserIcon navigation={navigation} />
         })}
       >
+        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
         <Stack.Screen
           name="Main"
           component={TabStack}

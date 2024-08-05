@@ -3,7 +3,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { database } from "../firebase/firebaseSetup";
 import { collection, onSnapshot } from "firebase/firestore";
-import ProviderItem from "../component/ProviderItem";
+import ProviderItem from "../components/ProviderItem";
 
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
