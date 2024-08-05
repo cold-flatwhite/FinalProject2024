@@ -5,9 +5,10 @@ import {
   TouchableOpacity,
   Image,
   ActivityIndicator,
+  StyleSheet,
+  FlatList,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import styles from "../styles";
 import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { database, auth } from "../firebase/FirebaseSetup";
 
@@ -67,6 +68,37 @@ export default function OrderScreen() {
     return () => unsubscribe();
   }, []);
 
+  const renderItem = ({ item: order }) => (
+    <TouchableOpacity
+      key={order.id}
+      style={[
+        styles.orderContainer,
+        order.orderType === "post"
+          ? styles.postOrderContainer
+          : styles.receivedOrderContainer,
+      ]}
+      onPress={() => navigation.navigate("Order Information", { order })}
+    >
+      <Image source={{ uri: order.image }} style={styles.image} />
+      <View style={styles.orderDetails}>
+        <Text style={styles.orderType}>
+          {order.orderType === "post" ? "Placed Orders" : "Received Orders"}
+        </Text>
+        <Text style={styles.service}>{order.request}</Text>
+        <Text style={styles.date}>
+          {new Date(order.date).toLocaleDateString()}
+        </Text>
+        <Text
+          style={
+            order.status === "Ongoing" ? styles.ongoing : styles.complete
+          }
+        >
+          {order.status}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+
   if (loading) {
     return (
       <View style={styles.container}>
@@ -77,43 +109,69 @@ export default function OrderScreen() {
 
   return (
     <View style={styles.container}>
-      {orders.map((order) => (
-        <TouchableOpacity
-          key={order.id}
-          style={styles.orderContainer}
-          onPress={() => navigation.navigate("Order Information", { order })}
-        >
-          <Image source={{ uri: order.image }} style={styles.image} />
-
-          <View>
-            <Text style={styles.orderType}>
-              {order.orderType === "post" ? "Placed orders" : "Received Orders"}
-            </Text>
-            {order.orderType === "post" && (
-              <Text style={styles.provider}>
-                {order.providerData
-                  ? order.providerData.name
-                  : "Unknown Provider"}{" "}
-                <Text style={styles.providerTag}>Provider</Text>
-              </Text>
-            )}
-            {order.orderType === "received" && (
-              <Text style={styles.user}>
-                {order.userData ? order.userData.name : "Unknown User"}{" "}
-                <Text style={styles.userTag}>User</Text>
-              </Text>
-            )}
-            <Text style={styles.service}>{order.request}</Text>
-            <Text
-              style={
-                order.status === "Ongoing" ? styles.ongoing : styles.complete
-              }
-            >
-              {order.status}
-            </Text>
-          </View>
-        </TouchableOpacity>
-      ))}
+      <FlatList
+        data={orders}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 10,
+  },
+  orderContainer: {
+    flexDirection: "row",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 2,
+    alignItems: 'center',
+  },
+  postOrderContainer: {
+    backgroundColor: "#FFF3E0",
+  },
+  receivedOrderContainer: {
+    backgroundColor: "#E8F5E9",
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginRight: 10,
+  },
+  orderDetails: {
+    flex: 1,
+  },
+  orderType: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  service: {
+    fontSize: 14,
+    color: "#333",
+    marginBottom: 5,
+  },
+  date: {
+    fontSize: 12,
+    color: "#666",
+    marginBottom: 5,
+  },
+  ongoing: {
+    fontSize: 14,
+    color: "red", // Using a bright color for visibility
+  },
+  complete: {
+    fontSize: 14,
+    color: "green", // Using a bright color for visibility
+  },
+});
