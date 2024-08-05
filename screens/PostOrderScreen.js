@@ -7,17 +7,20 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation, useRoute } from "@react-navigation/native";
+import { writeToDB } from "../firebase/FirebaseHelper";
+import { auth } from "../firebase/FirebaseSetup";
 
 export default function PostOrderScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { provider } = route.params;
 
-  const requestItems = provider.services.map(service => ({
+  const requestItems = provider.services.map((service) => ({
     label: service,
     value: service,
   }));
@@ -51,21 +54,47 @@ export default function PostOrderScreen() {
     setShowDatePicker(false);
   };
 
+  const handleConfirm = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert("Error", "No user logged in");
+        return;
+      }
+
+      const orderData = {
+        request,
+        breed,
+        date: date.toISOString(),
+        user_id: user.uid,
+        provider_id: provider.id, 
+      };
+
+      await writeToDB(orderData, "orders");
+      Alert.alert("Success", "Order placed successfully!");
+      navigation.replace("Order Information");
+    } catch (error) {
+      console.error("Error placing order: ", error);
+      Alert.alert("Error", "Failed to place order.");
+    }
+  };
+
+
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
         <View style={styles.providerInfoContainer}>
-          <Text style={styles.providerName}>{provider.name}</Text>
-          <Text style={styles.providerExperience}>
-            {provider.experience ? "Experienced" : "No Experience"}
+          <View style={styles.name}>
+            <Text style={styles.providerName}>{provider.name}</Text>
+            <Text style={styles.providerExperience}>
+              {provider.experience ? "Experienced" : "No Experience"}
+            </Text>
+          </View>
+
+          <Text style={styles.providerAddress}>
+            Adress : {provider.address}
           </Text>
-          <Text style={styles.providerAddress}>Adress  : {provider.address}</Text>
-          <Text style={styles.providerContact}>
-            Contact: {provider.email}
-          </Text>
-          <Text style={styles.providerServices}>
-            Services: {provider.services.join(", ")}
-          </Text>
+          <Text style={styles.providerContact}>Contact: {provider.email}</Text>
         </View>
 
         <Text style={styles.label}>Request</Text>
@@ -108,7 +137,7 @@ export default function PostOrderScreen() {
           <DateTimePicker
             value={date}
             mode="date"
-            display="default"
+            display="inline"
             onChange={onChangeDate}
             style={styles.datePicker}
           />
@@ -117,15 +146,13 @@ export default function PostOrderScreen() {
         <View style={styles.buttonRow}>
           <Pressable
             style={[styles.button, styles.cancelButton]}
-            onPress={() => navigation.replace("My orders")}
+            onPress={() => navigation.replace("Main")}
           >
             <Text style={styles.buttonText}>Cancel</Text>
           </Pressable>
           <Pressable
             style={[styles.button, styles.confirmButton]}
-            onPress={() => {
-              // Add logic to handle confirm action
-            }}
+            onPress={handleConfirm}
           >
             <Text style={styles.buttonText}>Confirm</Text>
           </Pressable>
@@ -138,11 +165,11 @@ export default function PostOrderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
     backgroundColor: "#f5f5f5",
   },
   providerInfoContainer: {
-    padding: 20,
+    padding: 10,
     backgroundColor: "#fff",
     borderRadius: 10,
     shadowColor: "#000",
@@ -150,45 +177,39 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
-    marginBottom: 20,
     borderWidth: 1,
     borderColor: "#ddd",
   },
+  name: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
   providerName: {
-    fontSize: 24,
+    fontSize: 15,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 8,
   },
   providerExperience: {
-    fontSize: 16,
+    fontSize: 15,
     color: "#4CAF50",
-    marginBottom: 8,
   },
   providerAddress: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#555",
-    marginBottom: 8,
   },
   providerContact: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 8,
-  },
-  providerServices: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#555",
   },
   label: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-    marginVertical: 10,
+    marginVertical: 5,
     color: "#333",
   },
   dropdown: {
     borderColor: "#ccc",
     borderRadius: 8,
-    marginBottom: 20,
   },
   input: {
     borderWidth: 1,
@@ -196,7 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     height: 40,
     paddingHorizontal: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     backgroundColor: "#fff",
   },
   buttonRow: {
@@ -222,7 +243,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   datePicker: {
-    width: '100%',
-    marginTop: 20,
+    width: "100%",
   },
 });
