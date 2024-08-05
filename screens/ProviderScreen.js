@@ -164,7 +164,7 @@ export default function ProviderScreen() {
 
       <View style={styles.buttonContainer}>
         <PressableButton pressedFunction={handleSubmit}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>{registeredProvider? "Update":"Sign up"}</Text>
         </PressableButton>
       </View>
     </ScrollView>
@@ -210,9 +210,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   servicesContainer: {
-    marginBottom: 10,
-    borderWidth : 1,
-    borderColor : "black"
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
   },
   buttonContainer: {
     alignItems: "center",
