@@ -92,6 +92,7 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
+      registeredProvider : 'true',
     };
 
     try {
@@ -164,7 +165,7 @@ export default function ProviderScreen() {
 
       <View style={styles.buttonContainer}>
         <PressableButton pressedFunction={handleSubmit}>
-          <Text style={styles.buttonText}>{registeredProvider? "Update":"Sign up"}</Text>
+          <Text style={styles.buttonText}>Confirm</Text>
         </PressableButton>
       </View>
     </ScrollView>
