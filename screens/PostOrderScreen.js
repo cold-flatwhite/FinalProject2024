@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert
+  Alert,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -67,18 +67,18 @@ export default function PostOrderScreen() {
         breed,
         date: date.toISOString(),
         user_id: user.uid,
-        provider_id: provider.id, 
+        provider_id: provider.id,
+        status: "ongoing",
       };
 
       await writeToDB(orderData, "orders");
       Alert.alert("Success", "Order placed successfully!");
-      navigation.replace("Order Information");
+      navigation.replace("Main", { screen: "My Orders" });
     } catch (error) {
       console.error("Error placing order: ", error);
       Alert.alert("Error", "Failed to place order.");
     }
   };
-
 
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>

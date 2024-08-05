@@ -3,11 +3,11 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styles from '../styles';
 
 export default function OrderInfoScreen({ route }) {
-  const { order } = route.params;
+  // const { order } = route.params;
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: order.image }} style={styles.image} />
+      {/* <Image source={{ uri: order.image }} style={styles.image} />
       <Text style={styles.info}>Order number: {order.id}</Text>
       <Text style={styles.info}>Provider: {order.provider}</Text>
       <Text style={styles.info}>Client: {order.client}</Text>
@@ -23,7 +23,7 @@ export default function OrderInfoScreen({ route }) {
         <TouchableOpacity style={styles.confirmButton}>
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
