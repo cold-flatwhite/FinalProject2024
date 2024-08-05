@@ -1,6 +1,5 @@
 import {
   View,
-  TextInput,
   Text,
   StyleSheet,
   Image,
@@ -10,7 +9,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
-import { writeToDB, getFromDB, updateToDB } from "../firebase/FirebaseHelper";
+import { setToDB, getFromDB, updateToDB } from "../firebase/FirebaseHelper";
 import { auth } from "../firebase/FirebaseSetup";
 
 export default function ProviderScreen() {
@@ -81,17 +80,6 @@ export default function ProviderScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!name || !address || !email) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    // email validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
 
     const selectedServices = services
       .filter((service) => service.selected)
@@ -104,7 +92,6 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
-      registeredProvider: true,
     };
 
     try {
@@ -120,7 +107,7 @@ export default function ProviderScreen() {
         await updateToDB(userId, "providers", data);
         alert("Data updated successfully!");
       } else {
-        await writeToDB(data, "providers", userId);
+        await setToDB(data, "providers", userId);
         await updateToDB(userId, "users", { registeredProvider: true });
         alert("Data submitted successfully!");
       }
@@ -138,32 +125,17 @@ export default function ProviderScreen() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
+        <Text style={styles.text}>{name}</Text>
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-        />
+        <Text style={styles.text}>{address}</Text>
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
+        <Text style={styles.text}>{email}</Text>
       </View>
 
       <View style={styles.switchContainer}>
@@ -178,7 +150,6 @@ export default function ProviderScreen() {
 
       {openForWork && (
         <View style={styles.servicesContainer}>
-          <Text style={styles.label}>Services</Text>
           {services.map((service, index) => (
             <View key={service.value} style={styles.switchContainer}>
               <Text>{service.label}</Text>
@@ -209,7 +180,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   label: {
     flex: 1,
@@ -217,13 +188,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 8,
   },
-  input: {
+  text: {
     flex: 2,
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingLeft: 8,
-    borderRadius: 5,
+    fontSize: 16,
+    color: "gray",
   },
   image: {
     width: 100,
@@ -239,10 +207,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   servicesContainer: {
-    marginBottom: 16,
+    marginBottom: 10,
+    borderWidth : 1,
+    borderColor : "black"
   },
   buttonContainer: {
     alignItems: "center",
