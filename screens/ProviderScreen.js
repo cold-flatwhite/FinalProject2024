@@ -1,7 +1,16 @@
-import { View, TextInput, Text, StyleSheet, Image, Switch, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Switch,
+  ScrollView,
+  Alert,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
-import { writeToDB } from "../firebase/firebaseHelper";
+import { setToDB, getFromDB, updateToDB } from "../firebase/FirebaseHelper";
+import { auth } from "../firebase/FirebaseSetup";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -9,18 +18,54 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
+  const [registeredProvider, setRegisteredProvider] = useState(false);
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
     { label: "Pet Sitting", value: "petSitting", selected: false },
     { label: "Grooming", value: "grooming", selected: false },
-    { label: "Training", value: "training", selected: false }
+    { label: "Training", value: "training", selected: false },
   ]);
 
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert("Error", "No user logged in");
+        return;
+      }
+
+      const userId = user.uid;
+      try {
+        const userProfile = await getFromDB(userId, "users");
+        if (userProfile) {
+          setName(userProfile.name || "");
+          setAddress(userProfile.address || "");
+          setEmail(userProfile.email || "");
+          setExperience(userProfile.experience || false);
+          setOpenForWork(userProfile.openForWork || false);
+          setRegisteredProvider(userProfile.registeredProvider || false);
+
+          if (userProfile.services) {
+            setServices(
+              services.map((service) => ({
+                ...service,
+                selected: userProfile.services.includes(service.value),
+              }))
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user profile", error);
+      }
+    };
+
+    loadUserProfile();
+  }, []);
 
   useEffect(() => {
     if (!openForWork) {
-      setServices(services.map(service => ({ ...service, selected: false })));
+      setServices(services.map((service) => ({ ...service, selected: false })));
     }
   }, [openForWork]);
 
@@ -35,19 +80,10 @@ export default function ProviderScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!name || !address || !email) {
-      alert("Please fill in all required fields.");
-      return;
-    }
 
-    // email validation
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailPattern.test(email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-
-    const selectedServices = services.filter(service => service.selected).map(service => service.value);
+    const selectedServices = services
+      .filter((service) => service.selected)
+      .map((service) => service.value);
 
     const data = {
       name,
@@ -55,12 +91,26 @@ export default function ProviderScreen() {
       email,
       experience,
       openForWork,
-      services: selectedServices
+      services: selectedServices,
     };
 
     try {
-      await writeToDB(data, "providers");
-      alert("Data submitted successfully!");
+      const user = auth.currentUser;
+      if (!user) {
+        Alert.alert("Error", "No user logged in");
+        return;
+      }
+
+      const userId = user.uid;
+
+      if (registeredProvider) {
+        await updateToDB(userId, "providers", data);
+        alert("Data updated successfully!");
+      } else {
+        await setToDB(data, "providers", userId);
+        await updateToDB(userId, "users", { registeredProvider: true });
+        alert("Data submitted successfully!");
+      }
     } catch (error) {
       console.error("Error writing document: ", error);
       alert("Error submitting data.");
@@ -75,32 +125,17 @@ export default function ProviderScreen() {
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Name</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          value={name}
-          onChangeText={setName}
-        />
+        <Text style={styles.text}>{name}</Text>
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-        />
+        <Text style={styles.text}>{address}</Text>
       </View>
 
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
+        <Text style={styles.text}>{email}</Text>
       </View>
 
       <View style={styles.switchContainer}>
@@ -115,7 +150,6 @@ export default function ProviderScreen() {
 
       {openForWork && (
         <View style={styles.servicesContainer}>
-          <Text style={styles.label}>Services</Text>
           {services.map((service, index) => (
             <View key={service.value} style={styles.switchContainer}>
               <Text>{service.label}</Text>
@@ -130,7 +164,7 @@ export default function ProviderScreen() {
 
       <View style={styles.buttonContainer}>
         <PressableButton pressedFunction={handleSubmit}>
-          <Text style={styles.buttonText}>Register</Text>
+          <Text style={styles.buttonText}>{registeredProvider? "Update":"Sign up"}</Text>
         </PressableButton>
       </View>
     </ScrollView>
@@ -146,7 +180,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   label: {
     flex: 1,
@@ -154,13 +188,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginRight: 8,
   },
-  input: {
+  text: {
     flex: 2,
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    paddingLeft: 8,
-    borderRadius: 5,
+    fontSize: 16,
+    color: "gray",
   },
   image: {
     width: 100,
@@ -176,10 +207,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 10,
   },
   servicesContainer: {
-    marginBottom: 16,
+    marginBottom: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 5,
   },
   buttonContainer: {
     alignItems: "center",

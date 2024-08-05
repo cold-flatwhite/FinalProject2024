@@ -1,7 +1,7 @@
 import { View, Text, FlatList, SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
-import { database } from "../firebase/firebaseSetup";
+import { database } from "../firebase/FirebaseSetup";
 import { collection, onSnapshot } from "firebase/firestore";
 import ProviderItem from "../components/ProviderItem";
 

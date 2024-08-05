@@ -1,28 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, StyleSheet, Alert } from 'react-native';
-import { getFromDB, setToDB, updateToDB } from '../firebase/firebaseHelper'; 
-import { auth } from '../firebase/firebaseSetup'; 
-import PressableButton from '../components/PressableButton';
+import React, { useState, useEffect } from "react";
+import { View, TextInput, Text, StyleSheet, Alert } from "react-native";
+import { getFromDB, setToDB, updateToDB } from "../firebase/FirebaseHelper";
+import { auth } from "../firebase/FirebaseSetup";
+import PressableButton from "../components/PressableButton";
 
 const ProfileScreen = () => {
-  const [name, setName] = useState('');
-  const [address, setAddress] = useState('');
-  const [email, setEmail] = useState('');
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [registeredProvider, setRegisteredProvider] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
       const user = auth.currentUser;
       if (!user) {
-        Alert.alert('Error', 'No user logged in');
+        Alert.alert("Error", "No user logged in");
         return;
       }
       const userId = user.uid;
       try {
-        const userProfile = await getFromDB(userId, 'users');
+        const userProfile = await getFromDB(userId, "users");
         if (userProfile) {
-          setName(userProfile.name || '');
-          setAddress(userProfile.address || '');
-          setEmail(userProfile.email || '');
+          setName(userProfile.name || "");
+          setAddress(userProfile.address || "");
+          setEmail(userProfile.email || "");
         }
       } catch (error) {
         console.error("Error loading profile data", error);
@@ -32,28 +33,41 @@ const ProfileScreen = () => {
   }, []);
 
   const handleUpdate = async () => {
+    // Validation checks
+    if (!name || !address || !email) {
+      Alert.alert("Validation Error", "Please fill in all required fields.");
+      return;
+    }
+
+    // Email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert("Validation Error", "Please enter a valid email address.");
+      return;
+    }
+
     const user = auth.currentUser;
     if (!user) {
-      Alert.alert('Error', 'No user logged in');
+      Alert.alert("Error", "No user logged in");
       return;
     }
     const userId = user.uid;
     try {
-      const userProfile = { name, address, email };
-      
-      const existingProfile = await getFromDB(userId, 'users');
+      const userProfile = { name, address, email, registeredProvider };
+
+      const existingProfile = await getFromDB(userId, "users");
       if (existingProfile) {
         // Update existing profile
-        await updateToDB(userId, 'users', userProfile);
+        await updateToDB(userId, "users", userProfile);
       } else {
         // Create new profile
-        await setToDB(userProfile, 'users', userId);
+        await setToDB(userProfile, "users", userId);
       }
 
-      Alert.alert('Success', 'Profile updated successfully!');
+      Alert.alert("Success", "Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile data", error);
-      Alert.alert('Error', 'Error updating profile.');
+      Alert.alert("Error", "Error updating profile.");
     }
   };
 
@@ -97,31 +111,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 16,
   },
   label: {
     flex: 1,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginRight: 8,
   },
   input: {
     flex: 2,
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     paddingLeft: 8,
     borderRadius: 5,
   },
   buttonText: {
-    color: 'white',
+    color: "white",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
