@@ -37,7 +37,7 @@ export default function ProviderScreen() {
 
       const userId = user.uid;
       try {
-        const userProfile = await getFromDB(userId, "users");
+        const userProfile = await getFromDB(userId, "providers");
         if (userProfile) {
           setName(userProfile.name || "");
           setAddress(userProfile.address || "");

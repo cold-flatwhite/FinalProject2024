@@ -90,7 +90,13 @@ export default function OrderScreen() {
         </Text>
         <Text
           style={
-            order.status === "Ongoing" ? styles.ongoing : styles.complete
+            order.status === "ongoing"
+              ? styles.ongoing
+              : order.status === "Complete"
+              ? styles.complete
+              : order.status === "Rejected"
+              ? styles.rejected
+              : styles.defaultStatus
           }
         >
           {order.status}
@@ -168,10 +174,14 @@ const styles = StyleSheet.create({
   },
   ongoing: {
     fontSize: 14,
-    color: "red", // Using a bright color for visibility
+    color: "orange", // Orange for ongoing
   },
   complete: {
     fontSize: 14,
-    color: "green", // Using a bright color for visibility
+    color: "green", // Green for complete
+  },
+  rejected: {
+    fontSize: 14,
+    color: "red", // Red for rejected
   },
 });
