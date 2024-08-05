@@ -2,30 +2,39 @@ import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../firebase/firebaseSetup'; 
-import { signInWithEmailAndPassword } from 'firebase/auth'; 
+import { createUserWithEmailAndPassword } from 'firebase/auth'; 
 
-const LoginScreen = () => {
+const SignupScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const navigation = useNavigation();
 
-    const handleLogin = async () => {
+    const handleRegister = async () => {
+        if (password !== confirmPassword) {
+            Alert.alert('Error', 'Passwords do not match');
+            return;
+        }
+
         try {
-            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            Alert.alert('Success', 'User logged in successfully');
+            Alert.alert('Success', 'User registered successfully');
             navigation.navigate('Main');  
         } catch (error) {
             let message;
             switch (error.code) {
-                case 'auth/user-disabled':
-                    message = 'The user account has been disabled by an administrator.';
+                case 'auth/email-already-in-use':
+                    message = 'The email address is already in use by another account.';
                     break;
-                case 'auth/user-not-found':
-                    message = 'There is no user corresponding to the given email.';
+                case 'auth/invalid-email':
+                    message = 'The email address is not valid.';
                     break;
-                case 'auth/wrong-password':
-                    message = 'The password is invalid for the given email.';
+                case 'auth/operation-not-allowed':
+                    message = 'Operation not allowed. Please contact support.';
+                    break;
+                case 'auth/weak-password':
+                    message = 'The password is too weak.';
                     break;
                 default:
                     message = error.message;
@@ -37,7 +46,7 @@ const LoginScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Login</Text>
+            <Text style={styles.title}>Signup</Text>
             <TextInput
                 style={styles.input}
                 placeholder="Email"
@@ -51,12 +60,19 @@ const LoginScreen = () => {
                 value={password}
                 onChangeText={setPassword}
             />
-            <Button title="Log In" onPress={handleLogin} />
+            <TextInput
+                style={styles.input}
+                placeholder="Confirm Password"
+                secureTextEntry
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+            />
+            <Button title="Register" onPress={handleRegister} />
             <Text
                 style={styles.link}
-                onPress={() => navigation.navigate('Signup')}
+                onPress={() => navigation.navigate('Login')}
             >
-                New User? Create an account
+                Already Registered? Login
             </Text>
         </View>
     );
@@ -87,4 +103,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default LoginScreen;
+export default SignupScreen;
