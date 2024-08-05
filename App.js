@@ -1,22 +1,38 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import SearchScreen from "./screens/SearchScreen";
-import OrderScreen from "./screens/OrderScreen";
-import ProviderScreen from "./screens/ProviderScreen";
-import OrderInfoScreen from "./screens/OrderInfoScreen";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import PostOrderScreen from "./screens/PostOrderScreen";
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import SearchScreen from './screens/SearchScreen';
+import OrderScreen from './screens/OrderScreen';
+import ProviderScreen from './screens/ProviderScreen';
+import OrderInfoScreen from './screens/OrderInfoScreen';
+import ProfileScreen from './screens/ProfileScreen';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import PostOrderScreen from './screens/PostOrderScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const TabStack = () => {
+const UserIcon = ({ navigation }) => (
+  <FontAwesome5
+    name="user-circle"
+    size={24}
+    color="black"
+    onPress={() => navigation.navigate('Profile')}
+    style={{ marginRight: 10 }}
+  />
+);
+
+const TabStack = ({ navigation }) => {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={{
+        headerRight: () => <UserIcon navigation={navigation} />
+      }}
+    >
       <Tab.Screen
         name="Search"
         component={SearchScreen}
@@ -27,7 +43,7 @@ const TabStack = () => {
         }}
       />
       <Tab.Screen
-        name=" Provider"
+        name="Provider"
         component={ProviderScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
@@ -37,7 +53,7 @@ const TabStack = () => {
               color="black"
             />
           ),
-          title : 'Sign Up as a Petcare Provider'
+          title: 'Sign Up as a Petcare Provider'
         }}
       />
       <Tab.Screen
@@ -56,14 +72,19 @@ const TabStack = () => {
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={({ navigation }) => ({
+          headerRight: () => <UserIcon navigation={navigation} />
+        })}
+      >
         <Stack.Screen
-          name="My orders"
+          name="Main"
           component={TabStack}
           options={{ headerShown: false }}
         />
         <Stack.Screen name="Order Information" component={OrderInfoScreen} />
-        <Stack.Screen name="PostOrderScreen" component={PostOrderScreen}/>
+        <Stack.Screen name="PostOrderScreen" component={PostOrderScreen} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
