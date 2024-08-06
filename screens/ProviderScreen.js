@@ -86,6 +86,9 @@ export default function ProviderScreen() {
       .map((service) => service.value);
 
     const data = {
+      name,
+      address,
+      email,
       experience,
       openForWork,
       services: selectedServices,
