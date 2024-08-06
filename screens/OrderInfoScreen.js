@@ -14,7 +14,6 @@ export default function OrderInfoScreen({ route, navigation }) {
   const { order } = route.params;
   const currentUserID = auth.currentUser.uid;
 
-  // Check if the current user is the provider or the one who posted the order
   const isProvider = order.provider_id === currentUserID;
 
   const handleConfirm = async () => {
