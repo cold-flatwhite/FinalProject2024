@@ -17,7 +17,7 @@ const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
-  const navigation = useNavigation(); // Get navigation prop
+  const navigation = useNavigation();
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -77,8 +77,8 @@ const ProfileScreen = () => {
       } else {
         await setToDB(userProfile, "users", userId);
       }
-
       Alert.alert("Success", "Profile updated successfully!");
+      navigation.replace("Main");
     } catch (error) {
       console.error("Error updating profile data", error);
       Alert.alert("Error", "Error updating profile.");

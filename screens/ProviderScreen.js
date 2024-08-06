@@ -34,13 +34,10 @@ export default function ProviderScreen() {
         Alert.alert("Error", "No user logged in");
         return;
       }
-
       const userId = user.uid;
       try {
         const userProfile = await getFromDB(userId, "users");
         const providerProfile = await getFromDB(userId, "providers");
-
-        console.log(providerProfile);
         if (userProfile) {
           setName(userProfile.name || "");
           setAddress(userProfile.address || "");
@@ -89,9 +86,6 @@ export default function ProviderScreen() {
       .map((service) => service.value);
 
     const data = {
-      name,
-      address,
-      email,
       experience,
       openForWork,
       services: selectedServices,
