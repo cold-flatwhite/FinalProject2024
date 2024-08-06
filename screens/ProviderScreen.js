@@ -38,19 +38,24 @@ export default function ProviderScreen() {
       const userId = user.uid;
       try {
         const userProfile = await getFromDB(userId, "users");
+        const providerProfile = await getFromDB(userId, "providers");
+        
+        console.log(providerProfile)
         if (userProfile) {
           setName(userProfile.name || "");
           setAddress(userProfile.address || "");
           setEmail(userProfile.email || "");
-          setExperience(userProfile.experience || false);
-          setOpenForWork(userProfile.openForWork || false);
-          setRegisteredProvider(userProfile.registeredProvider || false);
+        }
+        if (providerProfile) {
+          setExperience(providerProfile.experience || false);
+          setOpenForWork(providerProfile.openForWork || false);
+          setRegisteredProvider(providerProfile.registeredProvider || false);
 
-          if (userProfile.services) {
+          if (providerProfile.services) {
             setServices(
               services.map((service) => ({
                 ...service,
-                selected: userProfile.services.includes(service.value),
+                selected: providerProfile.services.includes(service.value),
               }))
             );
           }
@@ -59,7 +64,6 @@ export default function ProviderScreen() {
         console.error("Error loading user profile", error);
       }
     };
-
     loadUserProfile();
   }, []);
 
@@ -80,7 +84,6 @@ export default function ProviderScreen() {
   };
 
   const handleSubmit = async () => {
-
     const selectedServices = services
       .filter((service) => service.selected)
       .map((service) => service.value);
@@ -92,6 +95,7 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
+      registeredProvider: "true",
     };
 
     try {
@@ -108,7 +112,6 @@ export default function ProviderScreen() {
         alert("Data updated successfully!");
       } else {
         await setToDB(data, "providers", userId);
-        await updateToDB(userId, "users", { registeredProvider: true });
         alert("Data submitted successfully!");
       }
     } catch (error) {
@@ -164,7 +167,7 @@ export default function ProviderScreen() {
 
       <View style={styles.buttonContainer}>
         <PressableButton pressedFunction={handleSubmit}>
-          <Text style={styles.buttonText}>{registeredProvider? "Update":"Sign up"}</Text>
+          <Text style={styles.buttonText}>{registeredProvider? "Update" : "SignUp"}</Text>
         </PressableButton>
       </View>
     </ScrollView>
