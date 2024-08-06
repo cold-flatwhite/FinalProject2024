@@ -12,8 +12,8 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { writeToDB } from "../firebase/FirebaseHelper";
-import { auth } from "../firebase/FirebaseSetup";
+import { writeToDB } from "../firebase/firebaseHelper";
+import { auth } from "../firebase/firebaseSetup";
 
 export default function PostOrderScreen() {
   const navigation = useNavigation();

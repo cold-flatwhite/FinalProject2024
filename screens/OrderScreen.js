@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
-import { database, auth } from "../firebase/FirebaseSetup";
+import { database, auth } from "../firebase/firebaseSetup";
 
 export default function OrderScreen() {
   const [orders, setOrders] = useState([]);

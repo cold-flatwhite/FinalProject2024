@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { View, TextInput, Text, StyleSheet, Alert, Pressable } from "react-native";
-import { getFromDB, setToDB, updateToDB } from "../firebase/FirebaseHelper";
-import { auth } from "../firebase/FirebaseSetup"; // Import signOut function
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  Alert,
+  Pressable,
+} from "react-native";
+import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelper";
+import { auth } from "../firebase/firebaseSetup"; // Import signOut function
 import PressableButton from "../components/PressableButton";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
+
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -35,10 +43,7 @@ const ProfileScreen = () => {
     // Add sign out button to header
     navigation.setOptions({
       headerRight: () => (
-        <Pressable
-          style={styles.signOutButton}
-          onPress={handleSignOut}
-        >
+        <Pressable style={styles.signOutButton} onPress={handleSignOut}>
           <Text style={styles.signOutButtonText}>Sign Out</Text>
         </Pressable>
       ),
@@ -84,7 +89,7 @@ const ProfileScreen = () => {
     try {
       await signOut(auth); // Call Firebase signOut function
       Alert.alert("Success", "You have been signed out.");
-      navigation.navigate('Login'); // Navigate to Login screen or other appropriate screen
+      navigation.navigate("Login"); // Navigate to Login screen or other appropriate screen
     } catch (error) {
       console.error("Error signing out", error);
       Alert.alert("Error", "Error signing out.");
