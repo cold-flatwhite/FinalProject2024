@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
-import { setToDB, getFromDB, updateToDB } from "../firebase/FirebaseHelper";
-import { auth } from "../firebase/FirebaseSetup";
+import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelper";
+import { auth } from "../firebase/firebaseSetup";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -39,8 +39,8 @@ export default function ProviderScreen() {
       try {
         const userProfile = await getFromDB(userId, "users");
         const providerProfile = await getFromDB(userId, "providers");
-        
-        console.log(providerProfile)
+
+        console.log(providerProfile);
         if (userProfile) {
           setName(userProfile.name || "");
           setAddress(userProfile.address || "");
@@ -167,7 +167,9 @@ export default function ProviderScreen() {
 
       <View style={styles.buttonContainer}>
         <PressableButton pressedFunction={handleSubmit}>
-          <Text style={styles.buttonText}>{registeredProvider? "Update" : "SignUp"}</Text>
+          <Text style={styles.buttonText}>
+            {registeredProvider ? "Update" : "SignUp"}
+          </Text>
         </PressableButton>
       </View>
     </ScrollView>

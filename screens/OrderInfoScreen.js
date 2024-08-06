@@ -8,7 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { doc, updateDoc } from "firebase/firestore";
-import { database, auth } from "../firebase/FirebaseSetup";
+import { database, auth } from "../firebase/firebaseSetup";
 
 export default function OrderInfoScreen({ route, navigation }) {
   const { order } = route.params;
