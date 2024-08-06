@@ -1,7 +1,7 @@
 import { View, Text, FlatList, SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
-import { database } from "../firebase/firebaseSetup";
+import { database } from "../firebase/firebaseSetups";
 import { collection, onSnapshot } from "firebase/firestore";
 import ProviderItem from "../components/ProviderItem";
 
@@ -39,7 +39,7 @@ export default function SearchScreen() {
               return <ProviderItem provider={item} />;
             }}
             data={providers}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id}
           />
         )}
       </View>

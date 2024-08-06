@@ -7,8 +7,8 @@ import {
   Alert,
   Pressable,
 } from "react-native";
-import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelper";
-import { auth } from "../firebase/firebaseSetup"; // Import signOut function
+import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelpers";
+import { auth } from "../firebase/firebaseSetups"; // Import signOut function
 import PressableButton from "../components/PressableButton";
 import { useNavigation } from "@react-navigation/native";
 import { signOut } from "firebase/auth";

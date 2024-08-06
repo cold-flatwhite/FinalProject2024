@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
-import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelper";
-import { auth } from "../firebase/firebaseSetup";
+import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
+import { auth } from "../firebase/firebaseSetups";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");

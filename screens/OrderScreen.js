@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
-import { database, auth } from "../firebase/firebaseSetup";
+import { database, auth } from "../firebase/firebaseSetups";
 
 export default function OrderScreen() {
   const [orders, setOrders] = useState([]);
@@ -27,13 +27,17 @@ export default function OrderScreen() {
         let orderType = "";
 
         if (order.provider_id === currentUserID) {
-          userData = (await getDoc(doc(database, "users", order.user_id))).data();
+          userData = (
+            await getDoc(doc(database, "users", order.user_id))
+          ).data();
           orderType = "received";
         } else if (order.user_id === currentUserID) {
-          providerData = (await getDoc(doc(database, "users", order.provider_id))).data();
+          providerData = (
+            await getDoc(doc(database, "users", order.provider_id))
+          ).data();
           orderType = "post";
         } else {
-          return null; 
+          return null;
         }
 
         return {
@@ -140,7 +144,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
-    alignItems: 'center',
+    alignItems: "center",
   },
   postOrderContainer: {
     backgroundColor: "#FFF3E0",
