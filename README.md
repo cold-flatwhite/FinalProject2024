@@ -46,7 +46,7 @@ We have implemented user registration, login, profile management, provider regis
 ![orders](https://github.com/user-attachments/assets/9b86fd11-e237-4a6e-92f8-3984aeaeb70d)
 8. **Order Information Screen** - Users can view order details.
 ![1661723070328_ pic](https://github.com/user-attachments/assets/e0669105-d602-48fe-bac0-2fb1e146548e)
-   and providers can confirm or reject orders.
+9. and providers can confirm or reject orders.
 ![order comfirm](https://github.com/user-attachments/assets/defc5b15-384a-4e90-ade5-8c32deb738af)
 
 
