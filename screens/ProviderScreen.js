@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
-import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelper";
-import { auth } from "../firebase/firebaseSetup";
+import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
+import { auth } from "../firebase/firebaseSetups";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -34,13 +34,10 @@ export default function ProviderScreen() {
         Alert.alert("Error", "No user logged in");
         return;
       }
-
       const userId = user.uid;
       try {
         const userProfile = await getFromDB(userId, "users");
         const providerProfile = await getFromDB(userId, "providers");
-
-        console.log(providerProfile);
         if (userProfile) {
           setName(userProfile.name || "");
           setAddress(userProfile.address || "");

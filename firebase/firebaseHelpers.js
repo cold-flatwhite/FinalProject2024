@@ -8,7 +8,7 @@ import {
   getDoc,
   setDoc,
 } from "firebase/firestore";
-import { database } from "./firebaseSetup";
+import { database } from "./firebaseSetups";
 
 // Add a new document with a generated id.
 export async function writeToDB(data, collectionName) {
