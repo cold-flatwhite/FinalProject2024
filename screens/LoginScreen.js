@@ -3,6 +3,7 @@ import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { getFromDB } from "../firebase/firebaseHelpers";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -17,8 +18,16 @@ const LoginScreen = () => {
         password
       );
       const user = userCredential.user;
-      Alert.alert("Success", "User logged in successfully");
-      navigation.navigate("Main");
+
+      // Check if the user profile is complete
+      const userData = await getFromDB(user.uid, "users");
+      if (userData && userData.address && userData.name && userData.email) {
+        Alert.alert("Success", "User logged in successfully");
+        navigation.navigate("Main");
+      } else {
+        Alert.alert("Profile Incomplete", "Please complete your profile first.");
+        navigation.navigate("Profile");
+      }
     } catch (error) {
       let message;
       switch (error.code) {
