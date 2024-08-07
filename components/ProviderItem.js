@@ -9,7 +9,7 @@ export default function ProviderItem({ provider }) {
     <View key={provider.id} style={styles.card}>
       <Pressable
         onPress={() => {
-          navigation.replace("PostOrderScreen", { provider });
+          navigation.navigate("PostOrderScreen", { provider });
         }}
       >
         <View style={styles.headerRow}>
