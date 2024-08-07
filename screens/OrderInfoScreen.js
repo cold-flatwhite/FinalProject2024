@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { doc, updateDoc } from "firebase/firestore";
 import { database, auth } from "../firebase/firebaseSetups";
+import { deleteFromDb } from "../firebase/firebaseHelpers";
 
 export default function OrderInfoScreen({ route, navigation }) {
   const { order } = route.params;
@@ -37,6 +38,16 @@ export default function OrderInfoScreen({ route, navigation }) {
       navigation.goBack();
     } catch (error) {
       console.error("Error updating order status: ", error);
+    }
+  };
+
+  const handleCancel = async () => {
+    try {
+      await deleteFromDb(order.id, "orders");
+      Alert.alert("Success", "Order has been cancelled");
+      navigation.goBack();
+    } catch (error) {
+      console.error("Error cancelling order: ", error);
     }
   };
 
@@ -105,6 +116,14 @@ export default function OrderInfoScreen({ route, navigation }) {
             Date: {new Date(order.date).toLocaleDateString()}
           </Text>
           <Text style={styles.info}>Status: {order.status}</Text>
+          {order.status === "ongoing" && (
+            <TouchableOpacity
+              style={styles.cancelButton}
+              onPress={handleCancel}
+            >
+              <Text style={styles.buttonText}>Cancel Order</Text>
+            </TouchableOpacity>
+          )}
         </>
       )}
     </View>
@@ -138,5 +157,16 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#fff",
     fontSize: 16,
+  },
+  cancelButton: {
+    backgroundColor: "orange",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 20,
+  },
+  statusMessage: {
+    fontSize: 16,
+    marginTop: 20,
+    color: "gray",
   },
 });
