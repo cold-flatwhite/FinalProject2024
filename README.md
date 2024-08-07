@@ -10,22 +10,20 @@ Our data model consists of the following three collections:
 ## CRUD operations
 
 ### users Collection
-- **Create**: Create user document upon user registration.
-- **Read**: Fetch user information to display on the profile page.
-- **Update**: Update user document when user updates their profile.
-- **Delete**: Delete user document when user deletes their account.
+- **Create**: Create a user document upon registration. Store user information such as name, address, and email.
+- **Read**: Fetch user information to display on the profile page. Ensure that users can see their current information upon login.
+- **Update**: Update the user document when the user updates their profile, allowing modifications to name, address, and email.
 
 ### providers Collection
-- **Create**: Create provider document when user registers as a provider.
-- **Read**: Fetch provider information to display in search results.
-- **Update**: Update provider document when provider updates their profile.
-- **Delete**: Delete provider document when provider deletes their account.
+- **Create**: Register as a provider and create a provider document. Store provider information such as name, email, address, service offered, and open status.
+- **Read**: Fetch provider information to display in search results on the search screen. Show existing providers to users.
+- **Update**: Update the provider document when the provider modifies their profile information.
 
 ### orders Collection
-- **Create**: Create order document when user places an order.
-- **Read**: Fetch order details to display on the order information page.
-- **Update**: Update order status (e.g., complete, reject).
-- **Delete**: Delete order document when the order is canceled.  
+- **Create**: Create an order document when a user (client) places an order with a provider.
+- **Read**: Fetch order details to display on the orders screen. Users can view details of their orders and cancel them.
+- **Update**: Providers can accept or reject orders, which updates the order status. Clients can also update their orders, such as canceling them.
+- **Delete**: Delete order documents when the order is canceled by the client.
 
 
 ## Current State of the Application
@@ -46,9 +44,9 @@ We have implemented user registration, login, profile management, provider regis
 ![petcare register](https://github.com/user-attachments/assets/ce271794-16bb-4103-a693-53e7ecaae170)
 7. **Order Screen** - Users can view and manage orders.
 ![orders](https://github.com/user-attachments/assets/9b86fd11-e237-4a6e-92f8-3984aeaeb70d)
-8. **Order Information Screen** - Users can view order details.
-![order info](https://github.com/user-attachments/assets/a9b52135-2358-4aea-aa67-2b37ca77f11d)
-   and providers can confirm or reject orders.
+8. **Order Information Screen** - Users can view order details and cancel the order.
+![order_info](https://github.com/user-attachments/assets/e0669105-d602-48fe-bac0-2fb1e146548e)
+9. and providers can confirm or reject orders.
 ![order comfirm](https://github.com/user-attachments/assets/defc5b15-384a-4e90-ade5-8c32deb738af)
 
 
