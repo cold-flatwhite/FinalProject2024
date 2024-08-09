@@ -12,13 +12,14 @@ import PressableButton from "../components/PressableButton";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
 import { TextInput } from "react-native";
+import LocationManager from "../components/LocationManager";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const navigation = useNavigation();
-  const route = useRoute(); // Get route information
+  const route = useRoute(); 
 
   // Set address if returned from Map screen
   useEffect(() => {
@@ -128,6 +129,7 @@ const ProfileScreen = () => {
           </Text>
         </Pressable>
       </View>
+      <LocationManager/>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
         <TextInput

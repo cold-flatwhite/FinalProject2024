@@ -33,13 +33,12 @@ const LocationManager = () => {
   };
   return (
     <View>
-      <Button title="find my location" onPress={locateUserHandler}></Button>
       {location && (
         <Image
           source={{
             uri: `https://maps.googleapis.com/maps/api/staticmap?center=${location.latitude},${location.longitude}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:L%7C${location.latitude},${location.longitude}&key=${mapsApiKey}`,
           }}
-          style={{ width: 400, height: 230 }}
+          style={{ width: 400, height: 200 }}
         />
       )}
     </View>
