@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { database } from "../firebase/firebaseSetups";
 import { collection, onSnapshot } from "firebase/firestore";
 import ProviderItem from "../components/ProviderItem";
+import LocationManager from "../components/LocationManager";
 
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
@@ -27,7 +28,7 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <Text>Map</Text>
+        <LocationManager/>
       </View>
       <View style={styles.bottomContainer}>
         <Text>Avaiable Providers</Text>
