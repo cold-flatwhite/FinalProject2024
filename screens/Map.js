@@ -5,7 +5,7 @@ import MapView, { Marker } from "react-native-maps";
 const Map = ({ navigation }) => {
   const [location, setLocation] = useState(null);
   return (
-    <View>
+    <>
       <MapView
         style={styles.map}
         initialRegion={{
@@ -37,7 +37,7 @@ const Map = ({ navigation }) => {
         }}
         disabled={!location}
       />
-    </View>
+    </>
   );
 };
 

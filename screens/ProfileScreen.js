@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  TextInput,
   Text,
   StyleSheet,
   Alert,
   Pressable,
 } from "react-native";
 import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelpers";
-import { auth } from "../firebase/firebaseSetups"; // Import signOut function
+import { auth } from "../firebase/firebaseSetups";
 import PressableButton from "../components/PressableButton";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
+import { TextInput } from "react-native";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const navigation = useNavigation();
+  const route = useRoute(); // Get route information
+
+  // Set address if returned from Map screen
+  useEffect(() => {
+    if (route.params?.location) {
+      setAddress(
+        `Lat: ${route.params.location.latitude}, Lon: ${route.params.location.longitude}`
+      );
+    }
+  }, [route.params?.location]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -87,9 +97,9 @@ const ProfileScreen = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth); // Call Firebase signOut function
+      await signOut(auth);
       Alert.alert("Success", "You have been signed out.");
-      navigation.navigate("Login"); // Navigate to Login screen or other appropriate screen
+      navigation.navigate("Login");
     } catch (error) {
       console.error("Error signing out", error);
       Alert.alert("Error", "Error signing out.");
@@ -109,12 +119,14 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-        />
+        <Pressable
+          style={styles.addressButton}
+          onPress={() => navigation.navigate("Map")}
+        >
+          <Text style={styles.addressText}>
+            {address || "Tap to select address"}
+          </Text>
+        </Pressable>
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
@@ -156,6 +168,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 8,
     borderRadius: 5,
+  },
+  addressButton: {
+    flex: 2,
+    height: 40,
+    justifyContent: "center",
+    paddingLeft: 8,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  addressText: {
+    color: "gray",
   },
   buttonText: {
     color: "white",
