@@ -43,7 +43,6 @@ export default function SearchScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <Text style={styles.headerText}>Available Providers on Map</Text>
         <MapView
           style={styles.map}
           initialRegion={{
@@ -61,7 +60,6 @@ export default function SearchScreen() {
                 longitude: provider.location.longitude,
               }}
               title={provider.name}
-              description={provider.address}
               onPress={() => handleMarkerPress(provider.id)}
             >
               <View style={{ alignItems: "center" }}>
