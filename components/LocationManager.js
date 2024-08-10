@@ -1,17 +1,19 @@
 import { StyleSheet, View, Image } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoute } from "@react-navigation/native";
 import { mapsApiKey } from "@env";
 
-const LocationManager = () => {
+const LocationManager = ({ location: propLocation }) => {
   const [location, setLocation] = useState(null);
   const route = useRoute();
 
   useEffect(() => {
-    if (route.params) {
+    if (propLocation) {
+      setLocation(propLocation);
+    } else if (route.params) {
       setLocation(route.params.location);
     }
-  }, [route.params]);
+  }, [propLocation, route.params]);
 
   return (
     <View style={styles.container}>
