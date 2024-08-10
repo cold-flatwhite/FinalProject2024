@@ -21,7 +21,7 @@ const LoginScreen = () => {
 
       // Check if the user profile is complete
       const userData = await getFromDB(user.uid, "users");
-      if (userData && userData.address && userData.name && userData.email) {
+      if (userData && userData.addressDisplay && userData.name && userData.email) {
         Alert.alert("Success", "User logged in successfully");
         navigation.navigate("Main");
       } else {

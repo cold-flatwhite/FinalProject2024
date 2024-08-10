@@ -47,7 +47,7 @@ const ProfileScreen = () => {
     const updateAddressFromCoordinates = async () => {
       if (route.params?.location) {
         const { latitude, longitude } = route.params.location;
-        setLocation({ latitude, longitude }); 
+        setLocation({ latitude, longitude });
         const fetchedAddress = await fetchAddressFromCoordinates(
           latitude,
           longitude
@@ -122,7 +122,7 @@ const ProfileScreen = () => {
     }
     const userId = user.uid;
     try {
-      const userProfile = { name, location, email };
+      const userProfile = { name, location, email, addressDisplay };
 
       const existingProfile = await getFromDB(userId, "users");
       if (existingProfile) {
@@ -171,7 +171,7 @@ const ProfileScreen = () => {
           </Text>
         </Pressable>
       </View>
-      <LocationManager location={location}/>
+      <LocationManager location={location} />
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
         <TextInput

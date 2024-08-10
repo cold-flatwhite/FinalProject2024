@@ -1,10 +1,31 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
+import { getFromDB } from "../firebase/firebaseHelpers";
 
 export default function ProviderItem({ provider }) {
   const navigation = useNavigation();
-
+  const [providerData, setProviderData] = useState(null);
+  
+  useEffect(() => {
+    const fetchProviderData = async () => {
+      try {
+        // Fetch user details from the 'users' collection
+        const userDoc = await getFromDB(provider.id, "users");
+        
+        if (userDoc) {
+          setProviderData({ ...provider, ...userDoc});
+        } else {
+          console.error("No user data found");
+        }
+      } catch (error) {
+        console.error("Error fetching provider data: ", error);
+      } 
+    };
+    fetchProviderData();
+    console.log(providerData)
+  }, [provider.id]);
+  
   return (
     <View key={provider.id} style={styles.card}>
       <Pressable
