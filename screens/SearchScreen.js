@@ -11,6 +11,7 @@ import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
+  const [selectedProviderId, setSelectedProviderId] = useState(null);
   const collectionName = "providers";
 
   useEffect(() => {
@@ -35,6 +36,10 @@ export default function SearchScreen() {
     return () => unsubscribe();
   }, []);
 
+  const handleMarkerPress = (providerId) => {
+    setSelectedProviderId(providerId);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
@@ -57,6 +62,7 @@ export default function SearchScreen() {
               }}
               title={provider.name}
               description={provider.address}
+              onPress={() => handleMarkerPress(provider.id)}
             >
               <View style={{ alignItems: "center" }}>
                 <FontAwesome5 name="house-user" size={20} color="red" />
@@ -72,7 +78,13 @@ export default function SearchScreen() {
         ) : (
           <FlatList
             renderItem={({ item }) => {
-              return <ProviderItem provider={item} />;
+              const isSelected = item.id === selectedProviderId;
+              return (
+                <ProviderItem
+                  provider={item}
+                  style={isSelected ? styles.selectedItem : {}}
+                />
+              );
             }}
             data={providers}
             keyExtractor={(item) => item.id}
@@ -120,5 +132,10 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
+  },
+  selectedItem: {
+    backgroundColor: "#f0f8ff", 
+    borderColor: "#4682b4", 
+    borderWidth: 2, 
   },
 });

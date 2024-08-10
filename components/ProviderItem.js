@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { getFromDB } from "../firebase/firebaseHelpers";
 
-export default function ProviderItem({ provider }) {
+export default function ProviderItem({ provider, style }) {
   const navigation = useNavigation();
   const [providerData, setProviderData] = useState(null);
 
@@ -23,8 +23,9 @@ export default function ProviderItem({ provider }) {
     };
     fetchProviderData();
   }, []);
+
   return (
-    <View key={provider.id} style={styles.card}>
+    <View key={provider.id} style={[styles.card, style]}>
       <Pressable
         onPress={() => {
           navigation.navigate("PostOrderScreen", { provider });
