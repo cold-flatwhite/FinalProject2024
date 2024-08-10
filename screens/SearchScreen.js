@@ -5,7 +5,8 @@ import { database } from "../firebase/firebaseSetups";
 import { collection, onSnapshot } from "firebase/firestore";
 import ProviderItem from "../components/ProviderItem";
 import LocationManager from "../components/LocationManager";
-
+import MapView, { Marker } from "react-native-maps";
+import { getFromDB } from "../firebase/firebaseHelpers";
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
   const collectionName = "providers";
@@ -13,25 +14,53 @@ export default function SearchScreen() {
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(database, collectionName),
-      (querySnapShot) => {
+      async (querySnapShot) => {
         let newArray = [];
         if (!querySnapShot.empty) {
-          querySnapShot.forEach((docSnapShot) => {
-            newArray.push({ ...docSnapShot.data(), id: docSnapShot.id });
-          });
+          for (const docSnapShot of querySnapShot.docs) {
+            const providerData = docSnapShot.data();
+            const userId = docSnapShot.id;
+            const userDoc = await getFromDB(userId, "users");
+            if (userDoc) {
+              newArray.push({ ...providerData, ...userDoc, id: userId });
+              console.log(newArray);
+            }
+          }
         }
         setProviders(newArray);
       }
     );
     return () => unsubscribe();
   }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <LocationManager/>
+        <Text style={styles.headerText}>Available Providers on Map</Text>
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: 37.78825,
+            longitude: -122.4324,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+        >
+          {providers.map((provider) => (
+            <Marker
+              key={provider.id}
+              coordinate={{
+                latitude: provider.location.latitude,
+                longitude: provider.location.longitude,
+              }}
+              title={provider.name}
+              description={provider.address}
+            />
+          ))}
+        </MapView>
       </View>
       <View style={styles.bottomContainer}>
-        <Text>Avaiable Providers</Text>
+        {/* <Text>Avaiable Providers</Text>
         {providers.length === 0 ? (
           <Text>There is no providers</Text>
         ) : (
@@ -42,7 +71,7 @@ export default function SearchScreen() {
             data={providers}
             keyExtractor={(item) => item.id}
           />
-        )}
+        )} */}
       </View>
     </SafeAreaView>
   );
@@ -74,5 +103,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#dcd",
     paddingHorizontal: 10,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 10,
+  },
+  map: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
   },
 });
