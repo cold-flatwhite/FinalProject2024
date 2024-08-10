@@ -7,6 +7,8 @@ import ProviderItem from "../components/ProviderItem";
 import LocationManager from "../components/LocationManager";
 import MapView, { Marker } from "react-native-maps";
 import { getFromDB } from "../firebase/firebaseHelpers";
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
   const collectionName = "providers";
@@ -55,12 +57,16 @@ export default function SearchScreen() {
               }}
               title={provider.name}
               description={provider.address}
-            />
+            >
+              <View style={{ alignItems: "center" }}>
+                <FontAwesome5 name="house-user" size={20} color="red" />
+              </View>
+            </Marker>
           ))}
         </MapView>
       </View>
       <View style={styles.bottomContainer}>
-        {/* <Text>Avaiable Providers</Text>
+        <Text>Avaiable Providers</Text>
         {providers.length === 0 ? (
           <Text>There is no providers</Text>
         ) : (
@@ -71,7 +77,7 @@ export default function SearchScreen() {
             data={providers}
             keyExtractor={(item) => item.id}
           />
-        )} */}
+        )}
       </View>
     </SafeAreaView>
   );

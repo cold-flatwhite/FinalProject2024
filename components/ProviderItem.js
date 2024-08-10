@@ -31,7 +31,7 @@ export default function ProviderItem({ provider }) {
         }}
       >
         <View style={styles.headerRow}>
-          <Text style={styles.name}>{providerData?.name}</Text>
+          <Text style={styles.name}>{provider?.name}</Text>
           <View
             style={[
               styles.experienceBox,
@@ -39,17 +39,15 @@ export default function ProviderItem({ provider }) {
             ]}
           >
             <Text style={styles.experienceText}>
-              {providerData.experience ? "Experienced" : "No Experience"}
+              {provider.experience ? "Experienced" : "No Experience"}
             </Text>
           </View>
         </View>
         <View style={styles.body}>
-          <Text style={styles.address}>
-            Address: {providerData.addressDisplay}
-          </Text>
+          <Text style={styles.address}>Address: {provider.addressDisplay}</Text>
           {provider.openForWork && provider.services.length > 0 && (
             <View style={styles.servicesTags}>
-              {providerData.services.map((service, index) => (
+              {provider.services.map((service, index) => (
                 <Text key={index} style={styles.serviceTag}>
                   {service}
                 </Text>
