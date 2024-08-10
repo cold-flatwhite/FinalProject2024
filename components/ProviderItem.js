@@ -1,31 +1,28 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { getFromDB } from "../firebase/firebaseHelpers";
 
 export default function ProviderItem({ provider }) {
   const navigation = useNavigation();
   const [providerData, setProviderData] = useState(null);
-  
+
   useEffect(() => {
     const fetchProviderData = async () => {
       try {
         // Fetch user details from the 'users' collection
         const userDoc = await getFromDB(provider.id, "users");
-        
         if (userDoc) {
-          setProviderData({ ...provider, ...userDoc});
+          setProviderData({ ...provider, ...userDoc });
         } else {
           console.error("No user data found");
         }
       } catch (error) {
         console.error("Error fetching provider data: ", error);
-      } 
+      }
     };
     fetchProviderData();
-    console.log(providerData)
-  }, [provider.id]);
-  
+  }, []);
   return (
     <View key={provider.id} style={styles.card}>
       <Pressable
@@ -34,7 +31,7 @@ export default function ProviderItem({ provider }) {
         }}
       >
         <View style={styles.headerRow}>
-          <Text style={styles.name}>{provider.name}</Text>
+          <Text style={styles.name}>{providerData?.name}</Text>
           <View
             style={[
               styles.experienceBox,
@@ -42,15 +39,17 @@ export default function ProviderItem({ provider }) {
             ]}
           >
             <Text style={styles.experienceText}>
-              {provider.experience ? "Experienced" : "No Experience"}
+              {providerData.experience ? "Experienced" : "No Experience"}
             </Text>
           </View>
         </View>
         <View style={styles.body}>
-          <Text style={styles.address}>Address: {provider.address}</Text>
+          <Text style={styles.address}>
+            Address: {providerData.addressDisplay}
+          </Text>
           {provider.openForWork && provider.services.length > 0 && (
             <View style={styles.servicesTags}>
-              {provider.services.map((service, index) => (
+              {providerData.services.map((service, index) => (
                 <Text key={index} style={styles.serviceTag}>
                   {service}
                 </Text>
