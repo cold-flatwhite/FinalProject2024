@@ -4,12 +4,15 @@ import { doc, updateDoc } from "firebase/firestore";
 import { database, auth } from "../firebase/firebaseSetups";
 import { deleteFromDb } from "../firebase/firebaseHelpers";
 
+// Component to handle and display information for an individual order
 export default function OrderInfoScreen({ route, navigation }) {
   const { order } = route.params;
   const currentUserID = auth.currentUser.uid;
 
+  // Determine if the current user is the provider for the order
   const isProvider = order.provider_id === currentUserID;
 
+  // Function to handle order confirmation
   const handleConfirm = async () => {
     try {
       await updateDoc(doc(database, "orders", order.id), {
@@ -22,6 +25,7 @@ export default function OrderInfoScreen({ route, navigation }) {
     }
   };
 
+  // Function to handle order rejection
   const handleReject = async () => {
     try {
       await updateDoc(doc(database, "orders", order.id), {
@@ -34,6 +38,7 @@ export default function OrderInfoScreen({ route, navigation }) {
     }
   };
 
+  // Function to handle order cancellation
   const handleCancel = async () => {
     try {
       await deleteFromDb(order.id, "orders");
@@ -44,6 +49,7 @@ export default function OrderInfoScreen({ route, navigation }) {
     }
   };
 
+  // Function to render status message based on order status
   const renderStatusMessage = () => {
     if (order.status === "Accepted") {
       return <Text style={styles.statusMessage}>Order has been Accepted.</Text>;
@@ -57,19 +63,21 @@ export default function OrderInfoScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.info}>Order number: {order.id}</Text>
+      {/* Conditional rendering based on whether the current user is the provider */}
       {isProvider ? (
         <>
           <Text style={styles.info}>
-            Client: {order.userData?.name || "N/A"}
+            Client Name: {order.userData?.name || "N/A"}
           </Text>
-          <Text style={styles.info}>Address: {order.userData?.address}</Text>
-          <Text style={styles.info}>Breed: {order.breed}</Text>
           <Text style={styles.info}>
-            Email: {order.userData?.email || "N/A"}
+            Client Address: {order.userData?.addressDisplay}
           </Text>
-          <Text style={styles.info}>Request: {order.request}</Text>
           <Text style={styles.info}>
-            Date: {new Date(order.date).toLocaleDateString()}
+            Client Email: {order.userData?.email || "N/A"}
+          </Text>
+          <Text style={styles.info}>Request Service: {order.request}</Text>
+          <Text style={styles.info}>
+            Request Service Date: {new Date(order.date).toLocaleDateString()}
           </Text>
           {order.status === "Pending" ? (
             <View style={styles.buttonContainer}>
@@ -92,21 +100,21 @@ export default function OrderInfoScreen({ route, navigation }) {
         </>
       ) : (
         <>
+          {/* Display provider details if the current user is not the provider */}
           <Text style={styles.info}>
-            Client: {order.providerData?.name || "N/A"}
+            Provider Name: {order.providerData?.name || "N/A"}
           </Text>
           <Text style={styles.info}>
-            Address: {order.providerData?.address}
+            Provider Address: {order.providerData?.address}
           </Text>
-          <Text style={styles.info}>Breed: {order.breed}</Text>
           <Text style={styles.info}>
-            Email: {order.providerData?.email || "N/A"}
+            Provider Email: {order.providerData?.email || "N/A"}
           </Text>
-          <Text style={styles.info}>Request: {order.request}</Text>
+          <Text style={styles.info}>Request Service: {order.request}</Text>
           <Text style={styles.info}>
-            Date: {new Date(order.date).toLocaleDateString()}
+            Request Service Date: {new Date(order.date).toLocaleDateString()}
           </Text>
-          <Text style={styles.info}>Status: {order.status}</Text>
+          <Text style={styles.info}>Order Status: {order.status}</Text>
           {order.status === "Pending" && (
             <TouchableOpacity
               style={styles.cancelButton}
@@ -154,6 +162,8 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
   statusMessage: {
     fontSize: 16,
