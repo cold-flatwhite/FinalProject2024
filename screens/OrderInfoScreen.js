@@ -20,9 +20,9 @@ export default function OrderInfoScreen({ route, navigation }) {
   const handleConfirm = async () => {
     try {
       await updateDoc(doc(database, "orders", order.id), {
-        status: "Complete",
+        status: "Accepted",
       });
-      Alert.alert("Success", "Order has been marked as complete");
+      Alert.alert("Success", "Order has been marked as Accepted");
       navigation.goBack();
     } catch (error) {
       console.error("Error updating order status: ", error);
@@ -52,13 +52,13 @@ export default function OrderInfoScreen({ route, navigation }) {
   };
 
   const renderStatusMessage = () => {
-    if (order.status === "Complete") {
+    if (order.status === "Accepted") {
       return (
-        <Text style={styles.statusMessage}>Order has been completed.</Text>
+        <Text style={styles.statusMessage}>Order has been Accepted.</Text>
       );
     } else if (order.status === "Rejected") {
       return <Text style={styles.statusMessage}>Order has been rejected.</Text>;
-    } else if (order.status === "Incomplete") {
+    } else  {
       return null;
     }
   };
@@ -80,7 +80,7 @@ export default function OrderInfoScreen({ route, navigation }) {
           <Text style={styles.info}>
             Date: {new Date(order.date).toLocaleDateString()}
           </Text>
-          {order.status === "ongoing" ? (
+          {order.status === "Submitted" ? (
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.rejectButton}
@@ -116,7 +116,7 @@ export default function OrderInfoScreen({ route, navigation }) {
             Date: {new Date(order.date).toLocaleDateString()}
           </Text>
           <Text style={styles.info}>Status: {order.status}</Text>
-          {order.status === "ongoing" && (
+          {order.status === "Submitted" && (
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={handleCancel}

@@ -26,18 +26,10 @@ export default function PostOrderScreen() {
   }));
 
   const [request, setRequest] = useState("");
-  const [breed, setBreed] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const [requestOpen, setRequestOpen] = useState(false);
-  const [breedOpen, setBreedOpen] = useState(false);
-
-  const breedItems = [
-    { label: "Terrier", value: "Terrier" },
-    { label: "Labrador", value: "Labrador" },
-    { label: "Poodle", value: "Poodle" },
-  ];
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -64,11 +56,10 @@ export default function PostOrderScreen() {
 
       const orderData = {
         request,
-        breed,
         date: date.toISOString(),
         user_id: user.uid,
         provider_id: provider.id,
-        status: "ongoing",
+        status: "Submitted",
       };
 
       await writeToDB(orderData, "orders");
@@ -111,19 +102,6 @@ export default function PostOrderScreen() {
           zIndexInverse={1000}
         />
 
-        <Text style={styles.label}>Breed</Text>
-        <DropDownPicker
-          open={breedOpen}
-          value={breed}
-          items={breedItems}
-          setOpen={setBreedOpen}
-          setValue={setBreed}
-          setItems={() => {}}
-          style={styles.dropdown}
-          placeholder="Select a breed"
-          zIndex={999}
-          zIndexInverse={999}
-        />
 
         <Text style={styles.label}>Date</Text>
         <TextInput

@@ -1,12 +1,5 @@
-// OrderItem.js
-import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from 'react-native';
+import React from "react";
+import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
 
 // Component to display an individual order
 const OrderItem = ({ order, onPress }) => {
@@ -14,7 +7,7 @@ const OrderItem = ({ order, onPress }) => {
     <TouchableOpacity
       style={[
         styles.orderContainer,
-        order.orderType === 'post'
+        order.orderType === "post"
           ? styles.postOrderContainer
           : styles.receivedOrderContainer,
       ]}
@@ -22,25 +15,27 @@ const OrderItem = ({ order, onPress }) => {
     >
       <Image source={{ uri: order.image }} style={styles.image} />
       <View style={styles.orderDetails}>
-        <Text style={styles.orderType}>
-          {order.orderType === 'post' ? 'Placed Orders' : 'Received Orders'}
-        </Text>
-        <Text style={styles.service}>{order.request}</Text>
-        <Text style={styles.date}>
-          {new Date(order.date).toLocaleDateString()}
-        </Text>
+        <View style={styles.headerContainer}>
+          <Text style={styles.orderType}>
+            {order.orderType === "post" ? "Placed Orders" : "Received Orders"}
+          </Text>
+          <Text style={styles.date}>
+            {new Date(order.date).toLocaleDateString()}
+          </Text>
+        </View>
+        <Text style={styles.service}>Service Details: {order.request}</Text>
         <Text
           style={
-            order.status === 'ongoing'
-              ? styles.ongoing
-              : order.status === 'Complete'
-              ? styles.complete
-              : order.status === 'Rejected'
+            order.status === "Submitted"
+              ? styles.submitted
+              : order.status === "Accepted"
+              ? styles.accepted
+              : order.status === "Rejected"
               ? styles.rejected
               : styles.defaultStatus
           }
         >
-          {order.status}
+          Order Progress: {order.status}
         </Text>
       </View>
     </TouchableOpacity>
@@ -49,22 +44,22 @@ const OrderItem = ({ order, onPress }) => {
 
 const styles = StyleSheet.create({
   orderContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     borderRadius: 10,
     padding: 10,
     marginBottom: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 2,
-    alignItems: 'center',
+    alignItems: "center",
   },
   postOrderContainer: {
-    backgroundColor: '#FFF3E0',
+    backgroundColor: "#FFF3E0",
   },
   receivedOrderContainer: {
-    backgroundColor: '#E8F5E9',
+    backgroundColor: "#E8F5E9",
   },
   image: {
     width: 80,
@@ -75,32 +70,37 @@ const styles = StyleSheet.create({
   orderDetails: {
     flex: 1,
   },
-  orderType: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 5,
+  },
+  orderType: {
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+  date: {
+    fontSize: 14,
+    color: "green",
+    fontWeight: "bold",
   },
   service: {
     fontSize: 14,
-    color: '#333',
+    color: "#333",
     marginBottom: 5,
   },
-  date: {
-    fontSize: 12,
-    color: '#666',
-    marginBottom: 5,
-  },
-  ongoing: {
+
+  submitted: {
     fontSize: 14,
-    color: 'orange', // Orange for ongoing
+    color: "orange", // Orange for submitted
   },
-  complete: {
+  accepted: {
     fontSize: 14,
-    color: 'green', // Green for complete
+    color: "green", // Green for accepted
   },
   rejected: {
     fontSize: 14,
-    color: 'red', // Red for rejected
+    color: "red", // Red for rejected
   },
 });
 
