@@ -46,7 +46,7 @@ const TabStack = ({ navigation }) => {
               color="black"
             />
           ),
-          title: "Sign Up as a Petcare Provider",
+          title: "Provider Signup",
         }}
       />
       <Tab.Screen
