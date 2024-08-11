@@ -6,7 +6,6 @@ import OrderInfoScreen from "./screens/OrderInfoScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
-import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import PostOrderScreen from "./screens/PostOrderScreen";
 import Map from "./screens/Map";
 import TabStack from "./components/TabStack";
@@ -19,15 +18,6 @@ const Tab = createBottomTabNavigator();
 const defaultSetting = ({ navigation }) => ({
   headerStyle: { backgroundColor: "darkmagenta" },
   headerTintColor: "white",
-  headerRight: () => (
-    <FontAwesome5
-      name="user-circle"
-      size={24}
-      color="black"
-      onPress={() => navigation.navigate("Profile")}
-      style={{ marginRight: 10 }}
-    />
-  ),
 });
 
 // Authentication Stack

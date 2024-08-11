@@ -50,7 +50,6 @@ const SignupScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Signup</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"

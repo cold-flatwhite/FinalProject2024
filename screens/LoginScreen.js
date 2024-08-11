@@ -1,16 +1,24 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getFromDB } from "../firebase/firebaseHelpers";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordWarning, setPasswordWarning] = useState("");
   const navigation = useNavigation();
 
   const handleLogin = async () => {
+    if (password.length < 6) {
+      setPasswordWarning("Weak password. Use at least 6 characters.");
+      return;
+    } else {
+      setPasswordWarning("");
+    }
+
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -40,6 +48,9 @@ const LoginScreen = () => {
         case "auth/wrong-password":
           message = "The password is invalid for the given email.";
           break;
+        case "auth/invalid-email":
+          message = "The email address is not valid.";
+          break;
         default:
           message = error.message;
           break;
@@ -48,14 +59,28 @@ const LoginScreen = () => {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email) {
+      Alert.alert("Error", "Please enter your email to reset the password.");
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert("Success", "Password reset email sent.");
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -64,7 +89,13 @@ const LoginScreen = () => {
         value={password}
         onChangeText={setPassword}
       />
+      {passwordWarning ? (
+        <Text style={styles.warning}>{passwordWarning}</Text>
+      ) : null}
       <Button title="Log In" onPress={handleLogin} />
+      <TouchableOpacity onPress={handlePasswordReset}>
+        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+      </TouchableOpacity>
       <Text style={styles.link} onPress={() => navigation.navigate("Signup")}>
         New User? Create an account
       </Text>
@@ -90,6 +121,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 4,
+  },
+  warning: {
+    color: "red",
+    marginBottom: 8,
+  },
+  forgotPassword: {
+    color: "blue",
+    marginTop: 16,
   },
   link: {
     marginTop: 16,
