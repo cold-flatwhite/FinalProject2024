@@ -59,7 +59,7 @@ export default function PostOrderScreen() {
         date: date.toISOString(),
         user_id: user.uid,
         provider_id: provider.id,
-        status: "Submitted",
+        status: "Pending",
       };
 
       await writeToDB(orderData, "orders");

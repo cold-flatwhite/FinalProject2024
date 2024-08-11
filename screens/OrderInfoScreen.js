@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { doc, updateDoc } from "firebase/firestore";
 import { database, auth } from "../firebase/firebaseSetups";
 import { deleteFromDb } from "../firebase/firebaseHelpers";
@@ -53,12 +46,10 @@ export default function OrderInfoScreen({ route, navigation }) {
 
   const renderStatusMessage = () => {
     if (order.status === "Accepted") {
-      return (
-        <Text style={styles.statusMessage}>Order has been Accepted.</Text>
-      );
+      return <Text style={styles.statusMessage}>Order has been Accepted.</Text>;
     } else if (order.status === "Rejected") {
       return <Text style={styles.statusMessage}>Order has been rejected.</Text>;
-    } else  {
+    } else {
       return null;
     }
   };
@@ -80,7 +71,7 @@ export default function OrderInfoScreen({ route, navigation }) {
           <Text style={styles.info}>
             Date: {new Date(order.date).toLocaleDateString()}
           </Text>
-          {order.status === "Submitted" ? (
+          {order.status === "Pending" ? (
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.rejectButton}
@@ -116,7 +107,7 @@ export default function OrderInfoScreen({ route, navigation }) {
             Date: {new Date(order.date).toLocaleDateString()}
           </Text>
           <Text style={styles.info}>Status: {order.status}</Text>
-          {order.status === "Submitted" && (
+          {order.status === "Pending" && (
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={handleCancel}

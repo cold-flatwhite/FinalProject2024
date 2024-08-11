@@ -26,8 +26,8 @@ const OrderItem = ({ order, onPress }) => {
         <Text style={styles.service}>Service Details: {order.request}</Text>
         <Text
           style={
-            order.status === "Submitted"
-              ? styles.submitted
+            order.status === "Pending"
+              ? styles.pending
               : order.status === "Accepted"
               ? styles.accepted
               : order.status === "Rejected"
@@ -35,7 +35,7 @@ const OrderItem = ({ order, onPress }) => {
               : styles.defaultStatus
           }
         >
-          Order Progress: {order.status}
+          Order {order.status}
         </Text>
       </View>
     </TouchableOpacity>
@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 
-  submitted: {
+  pending: {
     fontSize: 14,
-    color: "orange", // Orange for submitted
+    color: "orange", // Orange for pending
   },
   accepted: {
     fontSize: 14,
