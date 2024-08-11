@@ -18,7 +18,6 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
-  const [registeredProvider, setRegisteredProvider] = useState(false);
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
@@ -40,13 +39,12 @@ export default function ProviderScreen() {
         const providerProfile = await getFromDB(userId, "providers");
         if (userProfile) {
           setName(userProfile.name || "");
-          setAddress(userProfile.address || "");
+          setAddress(userProfile.addressDisplay || "");
           setEmail(userProfile.email || "");
         }
         if (providerProfile) {
           setExperience(providerProfile.experience || false);
           setOpenForWork(providerProfile.openForWork || false);
-          setRegisteredProvider(providerProfile.registeredProvider || false);
 
           if (providerProfile.services) {
             setServices(
@@ -86,13 +84,9 @@ export default function ProviderScreen() {
       .map((service) => service.value);
 
     const data = {
-      name,
-      address,
-      email,
       experience,
       openForWork,
       services: selectedServices,
-      registeredProvider: "true",
     };
 
     try {
@@ -101,16 +95,9 @@ export default function ProviderScreen() {
         Alert.alert("Error", "No user logged in");
         return;
       }
-
       const userId = user.uid;
-
-      if (registeredProvider) {
-        await updateToDB(userId, "providers", data);
-        alert("Data updated successfully!");
-      } else {
-        await setToDB(data, "providers", userId);
-        alert("Data submitted successfully!");
-      }
+      await setToDB(data, "providers", userId);
+      alert("Data submitted successfully!");
     } catch (error) {
       console.error("Error writing document: ", error);
       alert("Error submitting data.");
@@ -164,9 +151,7 @@ export default function ProviderScreen() {
 
       <View style={styles.buttonContainer}>
         <PressableButton pressedFunction={handleSubmit}>
-          <Text style={styles.buttonText}>
-            {registeredProvider ? "Update" : "SignUp"}
-          </Text>
+          <Text style={styles.buttonText}>Update</Text>
         </PressableButton>
       </View>
     </ScrollView>

@@ -1,19 +1,38 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { getFromDB } from "../firebase/firebaseHelpers";
 
-export default function ProviderItem({ provider }) {
+export default function ProviderItem({ provider, style }) {
   const navigation = useNavigation();
+  const [providerData, setProviderData] = useState(null);
+
+  useEffect(() => {
+    const fetchProviderData = async () => {
+      try {
+        // Fetch user details from the 'users' collection
+        const userDoc = await getFromDB(provider.id, "users");
+        if (userDoc) {
+          setProviderData({ ...provider, ...userDoc });
+        } else {
+          console.error("No user data found");
+        }
+      } catch (error) {
+        console.error("Error fetching provider data: ", error);
+      }
+    };
+    fetchProviderData();
+  }, []);
 
   return (
-    <View key={provider.id} style={styles.card}>
+    <View key={provider.id} style={[styles.card, style]}>
       <Pressable
         onPress={() => {
           navigation.navigate("PostOrderScreen", { provider });
         }}
       >
         <View style={styles.headerRow}>
-          <Text style={styles.name}>{provider.name}</Text>
+          <Text style={styles.name}>{provider?.name}</Text>
           <View
             style={[
               styles.experienceBox,
@@ -26,7 +45,7 @@ export default function ProviderItem({ provider }) {
           </View>
         </View>
         <View style={styles.body}>
-          <Text style={styles.address}>Address: {provider.address}</Text>
+          <Text style={styles.address}>Address: {provider.addressDisplay}</Text>
           {provider.openForWork && provider.services.length > 0 && (
             <View style={styles.servicesTags}>
               {provider.services.map((service, index) => (

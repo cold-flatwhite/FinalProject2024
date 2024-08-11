@@ -1,23 +1,65 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  TextInput,
   Text,
   StyleSheet,
   Alert,
   Pressable,
+  TextInput,
 } from "react-native";
 import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelpers";
-import { auth } from "../firebase/firebaseSetups"; // Import signOut function
+import { auth } from "../firebase/firebaseSetups";
 import PressableButton from "../components/PressableButton";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { signOut } from "firebase/auth";
+import axios from "axios";
+import { mapsApiKey } from "@env";
+import LocationManager from "../components/LocationManager";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
+  const [addressDisplay, setAddressDisplay] = useState("");
+  const [location, setLocation] = useState(null);
   const [email, setEmail] = useState("");
   const navigation = useNavigation();
+  const route = useRoute();
+
+  const fetchAddressFromCoordinates = async (latitude, longitude) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${mapsApiKey}`
+      );
+
+      if (response.data.results.length > 0) {
+        return response.data.results[0].formatted_address;
+      } else {
+        Alert.alert("Error", "No address found for the provided coordinates.");
+        return "";
+      }
+    } catch (error) {
+      console.error("Error fetching address from coordinates", error);
+      Alert.alert("Error", "Failed to fetch address.");
+      return "";
+    }
+  };
+
+  useEffect(() => {
+    const updateAddressFromCoordinates = async () => {
+      if (route.params?.location) {
+        const { latitude, longitude } = route.params.location;
+        setLocation({ latitude, longitude });
+        const fetchedAddress = await fetchAddressFromCoordinates(
+          latitude,
+          longitude
+        );
+        setAddressDisplay(
+          fetchedAddress || `Lat: ${latitude}, Lon: ${longitude}`
+        );
+      }
+    };
+
+    updateAddressFromCoordinates();
+  }, [route.params?.location]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -31,8 +73,20 @@ const ProfileScreen = () => {
         const userProfile = await getFromDB(userId, "users");
         if (userProfile) {
           setName(userProfile.name || "");
-          setAddress(userProfile.address || "");
+          setLocation(userProfile.location || null);
           setEmail(userProfile.email || "");
+
+          if (userProfile.location) {
+            const { latitude, longitude } = userProfile.location;
+            setLocation({ latitude, longitude });
+            const fetchedAddress = await fetchAddressFromCoordinates(
+              latitude,
+              longitude
+            );
+            setAddressDisplay(
+              fetchedAddress || `Lat: ${latitude}, Lon: ${longitude}`
+            );
+          }
         }
       } catch (error) {
         console.error("Error loading profile data", error);
@@ -40,7 +94,6 @@ const ProfileScreen = () => {
     };
     loadProfile();
 
-    // Add sign out button to header
     navigation.setOptions({
       headerRight: () => (
         <Pressable style={styles.signOutButton} onPress={handleSignOut}>
@@ -51,7 +104,7 @@ const ProfileScreen = () => {
   }, [navigation]);
 
   const handleUpdate = async () => {
-    if (!name || !address || !email) {
+    if (!name || !location || !email) {
       Alert.alert("Validation Error", "Please fill in all required fields.");
       return;
     }
@@ -69,7 +122,7 @@ const ProfileScreen = () => {
     }
     const userId = user.uid;
     try {
-      const userProfile = { name, address, email };
+      const userProfile = { name, location, email, addressDisplay };
 
       const existingProfile = await getFromDB(userId, "users");
       if (existingProfile) {
@@ -87,9 +140,9 @@ const ProfileScreen = () => {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth); // Call Firebase signOut function
+      await signOut(auth);
       Alert.alert("Success", "You have been signed out.");
-      navigation.navigate("Login"); // Navigate to Login screen or other appropriate screen
+      navigation.navigate("Login");
     } catch (error) {
       console.error("Error signing out", error);
       Alert.alert("Error", "Error signing out.");
@@ -109,13 +162,16 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Address</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Address"
-          value={address}
-          onChangeText={setAddress}
-        />
+        <Pressable
+          style={styles.addressButton}
+          onPress={() => navigation.navigate("Map")}
+        >
+          <Text style={styles.addressText}>
+            {addressDisplay || "Tap to select address"}
+          </Text>
+        </Pressable>
       </View>
+      <LocationManager location={location} />
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Email</Text>
         <TextInput
@@ -156,6 +212,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingLeft: 8,
     borderRadius: 5,
+  },
+  addressButton: {
+    flex: 2,
+    height: 40,
+    justifyContent: "center",
+    paddingLeft: 8,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  addressText: {
+    color: "gray",
   },
   buttonText: {
     color: "white",

@@ -14,6 +14,7 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import PostOrderScreen from './screens/PostOrderScreen';
+import Map from './screens/Map';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -89,6 +90,7 @@ const App = () => {
         <Stack.Screen name="Order Information" component={OrderInfoScreen} />
         <Stack.Screen name="PostOrderScreen" component={PostOrderScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="Map" component={Map}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
