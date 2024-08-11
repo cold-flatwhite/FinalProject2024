@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  Image,
   ActivityIndicator,
-  StyleSheet,
   FlatList,
+  StyleSheet,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { database, auth } from "../firebase/firebaseSetups";
+import OrderItem from "../components/OrderItem";
 
 export default function OrderScreen() {
   const [orders, setOrders] = useState([]);
@@ -20,12 +19,14 @@ export default function OrderScreen() {
   const currentUserID = auth.currentUser.uid;
 
   useEffect(() => {
+    // Function to fetch user or provider data based on order details
     const fetchUserData = async (order) => {
       try {
         let providerData = null;
         let userData = null;
         let orderType = "";
 
+        // Check if the order belongs to the current user
         if (order.provider_id === currentUserID) {
           userData = (
             await getDoc(doc(database, "users", order.user_id))
@@ -40,6 +41,7 @@ export default function OrderScreen() {
           return null;
         }
 
+        // Return the order with additional user or provider data
         return {
           ...order,
           providerData,
@@ -52,10 +54,11 @@ export default function OrderScreen() {
       }
     };
 
+    // Subscribe to Firestore collection and fetch orders data
     const unsubscribe = onSnapshot(
       collection(database, collectionName),
       async (querySnapshot) => {
-        setLoading(true);
+        setLoading(true); // Set loading to true while fetching data
         const ordersArray = [];
         for (const docSnapshot of querySnapshot.docs) {
           const orderData = docSnapshot.data();
@@ -64,51 +67,24 @@ export default function OrderScreen() {
             ordersArray.push({ ...orderWithUserData, id: docSnapshot.id });
           }
         }
-        setOrders(ordersArray);
-        setLoading(false);
+        setOrders(ordersArray); // Set the fetched orders to state
+        setLoading(false); // Set loading to false once data is fetched
       }
     );
 
+    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
+  // Render each order item using the OrderItem component
   const renderItem = ({ item: order }) => (
-    <TouchableOpacity
-      key={order.id}
-      style={[
-        styles.orderContainer,
-        order.orderType === "post"
-          ? styles.postOrderContainer
-          : styles.receivedOrderContainer,
-      ]}
+    <OrderItem
+      order={order}
       onPress={() => navigation.navigate("Order Information", { order })}
-    >
-      <Image source={{ uri: order.image }} style={styles.image} />
-      <View style={styles.orderDetails}>
-        <Text style={styles.orderType}>
-          {order.orderType === "post" ? "Placed Orders" : "Received Orders"}
-        </Text>
-        <Text style={styles.service}>{order.request}</Text>
-        <Text style={styles.date}>
-          {new Date(order.date).toLocaleDateString()}
-        </Text>
-        <Text
-          style={
-            order.status === "ongoing"
-              ? styles.ongoing
-              : order.status === "Complete"
-              ? styles.complete
-              : order.status === "Rejected"
-              ? styles.rejected
-              : styles.defaultStatus
-          }
-        >
-          {order.status}
-        </Text>
-      </View>
-    </TouchableOpacity>
+    />
   );
 
+  // Display a loading spinner while data is being fetched
   if (loading) {
     return (
       <View style={styles.container}>
@@ -117,6 +93,7 @@ export default function OrderScreen() {
     );
   }
 
+  // Render the list of orders
   return (
     <View style={styles.container}>
       <FlatList
@@ -133,59 +110,5 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f5f5f5",
     padding: 10,
-  },
-  orderContainer: {
-    flexDirection: "row",
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-    alignItems: "center",
-  },
-  postOrderContainer: {
-    backgroundColor: "#FFF3E0",
-  },
-  receivedOrderContainer: {
-    backgroundColor: "#E8F5E9",
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    marginRight: 10,
-  },
-  orderDetails: {
-    flex: 1,
-  },
-  orderType: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  service: {
-    fontSize: 14,
-    color: "#333",
-    marginBottom: 5,
-  },
-  date: {
-    fontSize: 12,
-    color: "#666",
-    marginBottom: 5,
-  },
-  ongoing: {
-    fontSize: 14,
-    color: "orange", // Orange for ongoing
-  },
-  complete: {
-    fontSize: 14,
-    color: "green", // Green for complete
-  },
-  rejected: {
-    fontSize: 14,
-    color: "red", // Red for rejected
   },
 });
