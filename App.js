@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -16,6 +16,19 @@ import { onAuthStateChanged } from "firebase/auth";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const defaultSetting = ({ navigation }) => ({
+  headerStyle: { backgroundColor: "darkmagenta" },
+  headerTintColor: "white",
+  headerRight: () => (
+    <FontAwesome5
+      name="user-circle"
+      size={24}
+      color="black"
+      onPress={() => navigation.navigate("Profile")}
+      style={{ marginRight: 10 }}
+    />
+  ),
+});
 
 // Authentication Stack
 const AuthStack = (
@@ -54,41 +67,10 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-
   return (
     <NavigationContainer>
-      <Stack.Navigator
-        screenOptions={({ navigation }) => ({
-          headerRight: () => (
-            <FontAwesome5
-              name="user-circle"
-              size={24}
-              color="black"
-              onPress={() => navigation.navigate("Profile")}
-              style={{ marginRight: 10 }}
-            />
-          ),
-        })}
-      >
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Signup"
-          component={SignupScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Main"
-          component={TabStack}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen name="Order Information" component={OrderInfoScreen} />
-        <Stack.Screen name="PostOrderScreen" component={PostOrderScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="Map" component={Map} />
+      <Stack.Navigator screenOptions={defaultSetting}>
+        {isUserAuthenticated ? AppStack : AuthStack}
       </Stack.Navigator>
     </NavigationContainer>
   );
