@@ -1,22 +1,33 @@
-import { View, Text, FlatList, SafeAreaView, StyleSheet } from "react-native";
-import React from "react";
-import { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  SafeAreaView,
+  StyleSheet,
+} from "react-native";
+import React, { useState, useEffect } from "react";
 import { database } from "../firebase/firebaseSetups";
 import { collection, onSnapshot } from "firebase/firestore";
 import ProviderItem from "../components/ProviderItem";
-import LocationManager from "../components/LocationManager";
 import MapView, { Marker } from "react-native-maps";
 import { getFromDB } from "../firebase/firebaseHelpers";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import { mapsApiKey } from "@env";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 export default function SearchScreen() {
   const [providers, setProviders] = useState([]);
   const [selectedProviderId, setSelectedProviderId] = useState(null);
-  const collectionName = "providers";
+  const [region, setRegion] = useState({
+    latitude: 37.78825,
+    longitude: -122.4324,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(database, collectionName),
+      collection(database, "providers"),
       async (querySnapShot) => {
         let newArray = [];
         if (!querySnapShot.empty) {
@@ -26,7 +37,6 @@ export default function SearchScreen() {
             const userDoc = await getFromDB(userId, "users");
             if (userDoc) {
               newArray.push({ ...providerData, ...userDoc, id: userId });
-              console.log(newArray);
             }
           }
         }
@@ -40,17 +50,38 @@ export default function SearchScreen() {
     setSelectedProviderId(providerId);
   };
 
+  const handlePlaceSelect = (data, details) => {
+    if (details && details.geometry && details.geometry.location) {
+      const { geometry } = details;
+      const { location } = geometry;
+      setRegion({
+        latitude: location.lat,
+        longitude: location.lng,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    } else {
+      alert("Unable to retrieve location details");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
+        <GooglePlacesAutocomplete
+          placeholder="Search for a place"
+          onPress={handlePlaceSelect}
+          query={{
+            key: mapsApiKey,
+            language: 'en',
+            types: 'geocode',
+          }}
+          fetchDetails={true} 
+          styles={autocompleteStyles}
+        />
         <MapView
           style={styles.map}
-          initialRegion={{
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
+          region={region} 
         >
           {providers.map((provider) => (
             <Marker
@@ -70,9 +101,9 @@ export default function SearchScreen() {
         </MapView>
       </View>
       <View style={styles.bottomContainer}>
-        <Text>Avaiable Providers</Text>
+        <Text>Available Providers</Text>
         {providers.length === 0 ? (
-          <Text>There is no providers</Text>
+          <Text>There are no providers</Text>
         ) : (
           <FlatList
             renderItem={({ item }) => {
@@ -92,24 +123,13 @@ export default function SearchScreen() {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     justifyContent: "center",
   },
-  textStyle: {
-    color: "darkmagenta",
-    fontSize: 25,
-  },
-  textContainer: {
-    color: "darkmagenta",
-    backgroundColor: "#aaa",
-    marginVertical: 15,
-    padding: 15,
-    borderRadius: 5,
-  },
-
   topContainer: {
     flex: 1,
     alignItems: "center",
@@ -120,20 +140,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#dcd",
     paddingHorizontal: 10,
   },
-  headerText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginVertical: 10,
-  },
   map: {
     flex: 1,
     width: "100%",
     height: "100%",
   },
   selectedItem: {
-    backgroundColor: "#f0f8ff", 
-    borderColor: "#4682b4", 
-    borderWidth: 2, 
+    backgroundColor: "#f0f8ff",
+    borderColor: "#4682b4",
+    borderWidth: 2,
+  },
+});
+
+const autocompleteStyles = StyleSheet.create({
+  container: {
+    flex: 0,
+    width: "100%",
+  },
+  textInput: {
+    height: 40,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  listView: {
+    backgroundColor: '#fff',
   },
 });
