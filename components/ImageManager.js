@@ -5,12 +5,40 @@ import * as ImagePicker from "expo-image-picker";
 
 const ImageManager = ({ onImageTaken }) => {
   const [pickedImage, setPickedImage] = useState(null);
+  const [response, requestPermission] = ImagePicker.useCameraPermissions(); // 使用 useCameraPermissions 钩子
+
+  const verifyPermission = async () => {
+    if (response?.granted) {
+      return true;
+    }
+
+    const customAlert = await new Promise((resolve) => {
+      Alert.alert(
+        "Camera Access Required",
+        "We need to access your camera.",
+        [
+          { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
+          { text: "Allow", onPress: () => resolve(true) },
+        ]
+      );
+    });
+
+    if (!customAlert) {
+      return false;
+    }
+
+    const permissionResult = await requestPermission();
+    return permissionResult.granted;
+  };
 
   const takeImageHandler = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-    if (!permissionResult.granted) {
-      Alert.alert("Insufficient permissions!", "You need to grant camera permissions to use this app.", [{ text: "Okay" }]);
+    const hasPermission = await verifyPermission();
+    if (!hasPermission) {
+      Alert.alert(
+        "Permission Denied",
+        "Camera access is required to take pictures. You can enable it in your device settings.",
+        [{ text: "Okay" }]
+      );
       return;
     }
 
