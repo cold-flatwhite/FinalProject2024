@@ -1,11 +1,10 @@
-// ImageManager.js
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, Alert } from "react-native";
+import { View, Text, Button, StyleSheet, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 
 const ImageManager = ({ onImageTaken }) => {
   const [pickedImage, setPickedImage] = useState(null);
-  const [response, requestPermission] = ImagePicker.useCameraPermissions(); // 使用 useCameraPermissions 钩子
+  const [response, requestPermission] = ImagePicker.useCameraPermissions();
 
   const verifyPermission = async () => {
     if (response?.granted) {
@@ -15,7 +14,7 @@ const ImageManager = ({ onImageTaken }) => {
     const customAlert = await new Promise((resolve) => {
       Alert.alert(
         "Camera Access Required",
-        "We need to access your camera.",
+        "We need to access your camera to allow you to take and upload pictures. Please allow access in the next prompt.",
         [
           { text: "Cancel", style: "cancel", onPress: () => resolve(false) },
           { text: "Allow", onPress: () => resolve(true) },
@@ -50,8 +49,9 @@ const ImageManager = ({ onImageTaken }) => {
       });
 
       if (!result.canceled) {
-        setPickedImage(result.assets[0].uri);
-        onImageTaken(result.assets[0].uri);
+        const imageUri = result.assets[0].uri;
+        setPickedImage(imageUri);
+        onImageTaken(imageUri);
       }
     } catch (err) {
       console.error("Error taking image:", err);
