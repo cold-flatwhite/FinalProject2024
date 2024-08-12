@@ -20,11 +20,7 @@ const LoginScreen = () => {
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
       // Check if the user profile is complete
@@ -109,30 +105,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
+    backgroundColor: "#f7f7f7",
   },
   input: {
     width: "100%",
-    padding: 8,
-    marginVertical: 8,
+    padding: 12,
+    marginVertical: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
+    borderColor: "#ddd",
+    borderRadius: 6,
+    backgroundColor: "#fff",
   },
   warning: {
     color: "red",
     marginBottom: 8,
   },
   forgotPassword: {
-    color: "blue",
+    color: "#0066cc",
     marginTop: 16,
   },
   link: {
     marginTop: 16,
-    color: "blue",
+    color: "#0066cc",
   },
 });
 

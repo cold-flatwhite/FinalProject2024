@@ -17,11 +17,7 @@ const SignupScreen = () => {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       Alert.alert("Success", "User registered successfully");
       navigation.navigate("Main");
@@ -55,6 +51,8 @@ const SignupScreen = () => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -84,22 +82,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
+    backgroundColor: "#f7f7f7",
   },
   input: {
     width: "100%",
-    padding: 8,
-    marginVertical: 8,
+    padding: 12,
+    marginVertical: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
+    borderColor: "#ddd",
+    borderRadius: 6,
+    backgroundColor: "#fff",
   },
   link: {
     marginTop: 16,
-    color: "blue",
+    color: "#0066cc",
   },
 });
 
