@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import PressableButton from "../components/PressableButton";
 import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
-import { auth } from "../firebase/firebaseSetups";
+import { auth, storage } from "../firebase/firebaseSetups";
+import { ref, uploadBytesResumable } from "firebase/storage"; // 导入 Firebase Storage 的函数
 import ImageManager from "../components/ImageManager"; // 导入 ImageManager 组件
 
 export default function ProviderScreen() {
@@ -86,16 +87,36 @@ export default function ProviderScreen() {
     setSelectedImage(uri); // 保存拍摄的图片URI
   };
 
+  const uploadImageToStorage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+      const imageRef = ref(storage, `images/${imageName}`);
+      const uploadResult = await uploadBytesResumable(imageRef, blob);
+      return uploadResult.metadata.fullPath; // 返回图片在 Firebase Storage 中的路径
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      Alert.alert("Error", "Failed to upload image.");
+      return null;
+    }
+  };
+
   const handleSubmit = async () => {
     const selectedServices = services
       .filter((service) => service.selected)
       .map((service) => service.value);
 
+    let imageUriInStorage = null;
+    if (selectedImage) {
+      imageUriInStorage = await uploadImageToStorage(selectedImage);
+    }
+
     const data = {
       experience,
       openForWork,
       services: selectedServices,
-      imageUri: selectedImage, // 将图片URI与其他数据一起保存
+      imageUri: imageUriInStorage, // 将上传后的图片路径存储在 Firestore 中
     };
 
     try {
@@ -117,7 +138,6 @@ export default function ProviderScreen() {
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
         <ImageManager onImageTaken={handleImageTaken} />
-        {/* 移除重复显示的图片 */}
       </View>
 
       <View style={styles.inputContainer}>
@@ -172,7 +192,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#E6F0FA",
+    backgroundColor: "#fff",
   },
   inputContainer: {
     flexDirection: "row",
@@ -210,7 +230,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    marginBottom : 30,
   },
   buttonText: {
     color: "white",
@@ -218,4 +237,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
