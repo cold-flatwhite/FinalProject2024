@@ -3,12 +3,14 @@ import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigation = useNavigation();
+  const [fontsLoaded] = useFonts({ Inter_900Black });
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -17,11 +19,7 @@ const SignupScreen = () => {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       Alert.alert("Success", "User registered successfully");
       navigation.navigate("Main");
@@ -50,12 +48,14 @@ const SignupScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Signup</Text>
+      <Text style={styles.title}>Petopia</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -85,22 +85,26 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: "#f7f7f7",
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 50,
+    fontFamily: 'Inter_900Black',
+    marginBottom: 24,
+    color: "#1E90FF",
   },
   input: {
     width: "100%",
-    padding: 8,
-    marginVertical: 8,
+    padding: 12,
+    marginVertical: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
+    borderColor: "#ddd",
+    borderRadius: 6,
+    backgroundColor: "#fff",
   },
   link: {
     marginTop: 16,
-    color: "blue",
+    color: "#0066cc",
   },
 });
 
