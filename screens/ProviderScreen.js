@@ -22,6 +22,7 @@ export default function ProviderScreen() {
   const [openForWork, setOpenForWork] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
 
+  // State to store the list of services and whether each service is selected
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
     { label: "Pet Sitting", value: "petSitting", selected: false },
@@ -29,6 +30,7 @@ export default function ProviderScreen() {
     { label: "Training", value: "training", selected: false },
   ]);
 
+  // useEffect to load the user's profile from the database when the component mounts
   useEffect(() => {
     const loadUserProfile = async () => {
       const user = auth.currentUser;
@@ -48,7 +50,8 @@ export default function ProviderScreen() {
         if (providerProfile) {
           setExperience(providerProfile.experience || false);
           setOpenForWork(providerProfile.openForWork || false);
-
+          
+          // Update services based on the provider profile data
           if (providerProfile.services) {
             setServices(
               services.map((service) => ({
@@ -57,10 +60,12 @@ export default function ProviderScreen() {
               }))
             );
           }
+
+          // Load and set the image URL from Firebase Storage
           if (providerProfile.imageUri) {
             const reference = ref(storage, providerProfile.imageUri);
             const url = await getDownloadURL(reference);
-            setSelectedImage(url); // 加载并设置图片URL
+            setSelectedImage(url); 
           }
         }
       } catch (error) {
@@ -70,12 +75,14 @@ export default function ProviderScreen() {
     loadUserProfile();
   }, []);
 
+  // useEffect to reset the selected services if 'openForWork' is set to false
   useEffect(() => {
     if (!openForWork) {
       setServices(services.map((service) => ({ ...service, selected: false })));
     }
   }, [openForWork]);
 
+  // Function to handle toggling the selection of a service
   const handleServiceToggle = (index) => {
     const updatedServices = services.map((service, i) => {
       if (i === index) {
@@ -86,10 +93,12 @@ export default function ProviderScreen() {
     setServices(updatedServices);
   };
 
+  // Function to handle the image taken by the user
   const handleImageTaken = (uri) => {
-    setSelectedImage(uri); // 保存拍摄的图片URI
+    setSelectedImage(uri); 
   };
 
+  // Function to upload the image to Firebase Storage
   const uploadImageToStorage = async (uri) => {
     try {
       const response = await fetch(uri);
@@ -97,7 +106,7 @@ export default function ProviderScreen() {
       const imageName = uri.substring(uri.lastIndexOf('/') + 1);
       const imageRef = ref(storage, `images/${imageName}`);
       const uploadResult = await uploadBytesResumable(imageRef, blob);
-      return uploadResult.metadata.fullPath; // 返回图片在 Firebase Storage 中的路径
+      return uploadResult.metadata.fullPath; 
     } catch (error) {
       console.error("Error uploading image: ", error);
       Alert.alert("Error", "Failed to upload image.");
@@ -105,6 +114,7 @@ export default function ProviderScreen() {
     }
   };
 
+  // Function to handle submitting the user's provider profile
   const handleSubmit = async () => {
     const selectedServices = services
       .filter((service) => service.selected)
@@ -119,7 +129,7 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
-      imageUri: imageUriInStorage, // 将上传后的图片路径存储在 Firestore 中
+      imageUri: imageUriInStorage, 
     };
 
     try {

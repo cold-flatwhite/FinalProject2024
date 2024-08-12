@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  Image,  // 导入 Image 组件
+  Image,  
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -28,11 +28,13 @@ export default function PostOrderScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [requestOpen, setRequestOpen] = useState(false);
 
+  // Map provider services to items for the dropdown picker
   const requestItems = provider.services.map((service) => ({
     label: service,
     value: service,
   }));
 
+  // useEffect to fetch the provider's image URL from Firebase Storage
   useEffect(() => {
     const fetchImageUrl = async () => {
       if (provider.imageUri) { 
@@ -49,21 +51,25 @@ export default function PostOrderScreen() {
     fetchImageUrl();
   }, [provider.imageUri]);
 
+  // Function to handle date selection from the date picker
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDatePicker(false);
     setDate(currentDate);
-  };
-
+  }; 
+  
+  // Function to show the date picker
   const showDatepicker = () => {
     setShowDatePicker(true);
   };
 
+  // Function to dismiss the keyboard and close the date picker
   const dismissKeyboard = () => {
     Keyboard.dismiss();
     setShowDatePicker(false);
   };
 
+  // Function to handle order confirmation
   const handleConfirm = async () => {
     try {
       const user = auth.currentUser;
@@ -72,6 +78,7 @@ export default function PostOrderScreen() {
         return;
       }
 
+      // Create order data to be saved in the database
       const orderData = {
         request,
         date: date.toISOString(),

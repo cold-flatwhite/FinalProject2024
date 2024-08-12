@@ -11,7 +11,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordWarning, setPasswordWarning] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 密码可见性状态
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
 
@@ -23,6 +23,7 @@ const LoginScreen = () => {
       setPasswordWarning("");
     }
 
+    // Sign in the user with Firebase Authentication
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -38,12 +39,13 @@ const LoginScreen = () => {
       }
     } catch (error) {
       let message;
+      // Handle different authentication errors and display appropriate messages
       switch (error.code) {
         case "auth/user-disabled":
           message = "The user account has been disabled by an administrator.";
           break;
         case "auth/user-not-found":
-          message = "Account does not exist"; // 用户不存在的提示
+          message = "Account does not exist"; 
           break;
         case "auth/wrong-password":
           message = "The password is invalid for the given email.";
@@ -59,6 +61,7 @@ const LoginScreen = () => {
     }
   };
 
+  // Function to handle password reset via email
   const handlePasswordReset = async () => {
     if (!email) {
       Alert.alert("Attention", "Please enter your email to reset the password.");
@@ -70,13 +73,14 @@ const LoginScreen = () => {
       Alert.alert("Success", "Password reset email sent.");
     } catch (error) {
       if (error.code === "auth/user-not-found") {
-        Alert.alert("Error", "Account does not exist"); // 账户不存在的提示
+        Alert.alert("Error", "Account does not exist"); 
       } else {
         Alert.alert("Error", error.message);
       }
     }
   };
 
+  // Function to toggle password visibility on and off
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -96,7 +100,7 @@ const LoginScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
+          secureTextEntry={!isPasswordVisible} 
           value={password}
           onChangeText={setPassword}
         />

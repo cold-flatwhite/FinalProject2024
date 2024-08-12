@@ -10,7 +10,7 @@ const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 密码可见性状态
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
 
@@ -20,26 +20,29 @@ const SignupScreen = () => {
       return;
     }
 
-    // 复杂密码检查
+    // Password complexity check using regex
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
     if (!passwordRegex.test(password)) {
       Alert.alert("Error", "Password must be at least 6 characters long and contain both letters and numbers.");
       return;
     }
 
+    // Check if an account with the provided email already exists
     try {
       const signInMethods = await fetchSignInMethodsForEmail(auth, email);
       if (signInMethods.length > 0) {
-        Alert.alert("Error", "Account already exists"); // 提示账户已存在
+        Alert.alert("Error", "Account already exists"); 
         return;
       }
 
+      // Create a new user account using Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       Alert.alert("Profile Incomplete", "Please complete your profile first.");
       navigation.navigate("Profile");
     } catch (error) {
       let message;
+      // Handle different registration errors and display appropriate messages
       switch (error.code) {
         case "auth/email-already-in-use":
           message = "The email address is already in use by another account.";
@@ -61,6 +64,7 @@ const SignupScreen = () => {
     }
   };
 
+  // Function to toggle password visibility on and off
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -80,7 +84,7 @@ const SignupScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
+          secureTextEntry={!isPasswordVisible} 
           value={password}
           onChangeText={setPassword}
         />
@@ -92,7 +96,7 @@ const SignupScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
-          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
+          secureTextEntry={!isPasswordVisible} 
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
