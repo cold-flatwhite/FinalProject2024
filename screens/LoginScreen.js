@@ -5,14 +5,15 @@ import { auth } from "../firebase/firebaseSetups";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getFromDB } from "../firebase/firebaseHelpers";
 import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
+import Feather from '@expo/vector-icons/Feather';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordWarning, setPasswordWarning] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 密码可见性状态
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
-
 
   const handleLogin = async () => {
     if (password.length < 6) {
@@ -42,7 +43,7 @@ const LoginScreen = () => {
           message = "The user account has been disabled by an administrator.";
           break;
         case "auth/user-not-found":
-          message = "There is no user corresponding to the given email.";
+          message = "Account does not exist"; // 用户不存在的提示
           break;
         case "auth/wrong-password":
           message = "The password is invalid for the given email.";
@@ -63,17 +64,26 @@ const LoginScreen = () => {
       Alert.alert("Attention", "Please enter your email to reset the password.");
       return;
     }
+
     try {
       await sendPasswordResetEmail(auth, email);
       Alert.alert("Success", "Password reset email sent.");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      if (error.code === "auth/user-not-found") {
+        Alert.alert("Error", "Account does not exist"); // 账户不存在的提示
+      } else {
+        Alert.alert("Error", error.message);
+      }
     }
+  };
+
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
     <View style={styles.container}>
-            <Text style={styles.title}>Petopia</Text>
+      <Text style={styles.title}>Petopia</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -82,13 +92,18 @@ const LoginScreen = () => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       {passwordWarning ? (
         <Text style={styles.warning}>{passwordWarning}</Text>
       ) : null}
@@ -125,6 +140,16 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 6,
     backgroundColor: "#fff",
+  },
+  passwordContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  icon: {
+    position: "absolute",
+    right: 10,
   },
   warning: {
     color: "red",

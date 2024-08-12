@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
 import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
+import Feather from '@expo/vector-icons/Feather';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 密码可见性状态
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
 
@@ -18,7 +20,20 @@ const SignupScreen = () => {
       return;
     }
 
+    // 复杂密码检查
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    if (!passwordRegex.test(password)) {
+      Alert.alert("Error", "Password must be at least 6 characters long and contain both letters and numbers.");
+      return;
+    }
+
     try {
+      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+      if (signInMethods.length > 0) {
+        Alert.alert("Error", "Account already exists"); // 提示账户已存在
+        return;
+      }
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       Alert.alert("Profile Incomplete", "Please complete your profile first.");
@@ -46,6 +61,10 @@ const SignupScreen = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Petopia</Text>
@@ -57,20 +76,30 @@ const SignupScreen = () => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <Button title="Register" onPress={handleRegister} />
       <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
         Already Registered? Login
@@ -101,6 +130,16 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 6,
     backgroundColor: "#fff",
+  },
+  passwordContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  icon: {
+    position: "absolute",
+    right: 10,
   },
   link: {
     marginTop: 16,
