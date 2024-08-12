@@ -1,3 +1,4 @@
+// ImageManager.js
 import React, { useState } from "react";
 import { View, Text, Button, StyleSheet, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -51,48 +52,48 @@ const ImageManager = ({ onImageTaken }) => {
       if (!result.canceled) {
         const imageUri = result.assets[0].uri;
         setPickedImage(imageUri);
-        onImageTaken(imageUri);
-      }
-    } catch (err) {
-      console.error("Error taking image:", err);
-      Alert.alert("Error", "An error occurred while taking the image.");
-    }
-  };
-
-  return (
-    <View style={styles.imagePicker}>
-      <View style={styles.imagePreview}>
+        onImageTaken(imageUri); // 将图片URI传递给父组件
+        }
+        } catch (err) {
+        console.error("Error taking image:", err);
+        Alert.alert("Error", "An error occurred while taking the image.");
+        }
+        };
+        
+        return (
+        <View style={styles.imagePicker}>
+        <View style={styles.imagePreview}>
         {!pickedImage ? (
-          <Text>No image picked yet.</Text>
+        <Text>No image picked yet.</Text>
         ) : (
-          <Image style={styles.image} source={{ uri: pickedImage }} />
+        <Image style={styles.image} source={{ uri: pickedImage }} />
         )}
-      </View>
-      <Button title="Upload or Take Pictures" onPress={takeImageHandler} />
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  imagePicker: {
-    alignItems: "center",
-    marginVertical: 15,
-  },
-  imagePreview: {
-    width: 150,
-    height: 150,
-    marginBottom: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 75,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-});
-
-export default ImageManager;
+        </View>
+        <Button title="Upload or Take Pictures" onPress={takeImageHandler} />
+        </View>
+        );
+        };
+        
+        const styles = StyleSheet.create({
+        imagePicker: {
+        alignItems: "center",
+        marginVertical: 15,
+        },
+        imagePreview: {
+        width: 150,
+        height: 150,
+        marginBottom: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        borderColor: "#ccc",
+        borderWidth: 1,
+        borderRadius: 75,
+        overflow: "hidden",
+        },
+        image: {
+        width: "100%",
+        height: "100%",
+        },
+        });
+        
+        export default ImageManager;

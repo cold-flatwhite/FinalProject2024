@@ -1,10 +1,8 @@
-// ProviderScreen.js
 import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   Switch,
   ScrollView,
   Alert,
@@ -20,7 +18,7 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null); // 保存选中的图片
+  const [selectedImage, setSelectedImage] = useState(null); // 保存选中的图片URI
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
@@ -84,6 +82,10 @@ export default function ProviderScreen() {
     setServices(updatedServices);
   };
 
+  const handleImageTaken = (uri) => {
+    setSelectedImage(uri); // 保存拍摄的图片URI
+  };
+
   const handleSubmit = async () => {
     const selectedServices = services
       .filter((service) => service.selected)
@@ -93,7 +95,7 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
-      imageUri: selectedImage, // 保存图片路径
+      imageUri: selectedImage, // 将图片URI与其他数据一起保存
     };
 
     try {
@@ -114,11 +116,8 @@ export default function ProviderScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
-        {!selectedImage ? (
-          <ImageManager onImageTaken={setSelectedImage} />
-        ) : (
-          <Image style={styles.image} source={{ uri: selectedImage }} />
-        )}
+        <ImageManager onImageTaken={handleImageTaken} />
+        {/* 移除重复显示的图片 */}
       </View>
 
       <View style={styles.inputContainer}>
@@ -191,11 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 75,
-  },
   imageContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -223,3 +217,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
