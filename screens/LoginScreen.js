@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import { signInWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getFromDB } from "../firebase/firebaseHelpers";
 import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
-import Feather from '@expo/vector-icons/Feather'; // 导入Feather图标
+import Feather from '@expo/vector-icons/Feather';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordWarning, setPasswordWarning] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); // 密码可见性状态
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
 
@@ -24,12 +24,6 @@ const LoginScreen = () => {
     }
 
     try {
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      if (methods.length === 0) {
-        Alert.alert("Account does not exist");
-        return;
-      }
-
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
@@ -49,7 +43,7 @@ const LoginScreen = () => {
           message = "The user account has been disabled by an administrator.";
           break;
         case "auth/user-not-found":
-          message = "Account does not exist.";
+          message = "Account does not exist"; // 用户不存在的提示
           break;
         case "auth/wrong-password":
           message = "The password is invalid for the given email.";
@@ -72,21 +66,19 @@ const LoginScreen = () => {
     }
 
     try {
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      if (methods.length === 0) {
-        Alert.alert("Account does not exist");
-        return;
-      }
-
       await sendPasswordResetEmail(auth, email);
       Alert.alert("Success", "Password reset email sent.");
     } catch (error) {
-      Alert.alert("Error", error.message);
+      if (error.code === "auth/user-not-found") {
+        Alert.alert("Error", "Account does not exist"); // 账户不存在的提示
+      } else {
+        Alert.alert("Error", error.message);
+      }
     }
   };
 
-  const toggleShowPassword = () => {
-    setShowPassword((prevState) => !prevState);
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
   };
 
   return (
@@ -102,14 +94,14 @@ const LoginScreen = () => {
       />
       <View style={styles.passwordContainer}>
         <TextInput
-          style={styles.passwordInput}
+          style={styles.input}
           placeholder="Password"
-          secureTextEntry={!showPassword}
+          secureTextEntry={!isPasswordVisible} // 根据状态显示或隐藏密码
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={toggleShowPassword} style={styles.showPasswordButton}>
-          <Feather name={showPassword ? "eye-off" : "eye"} size={24} color="black" />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
         </TouchableOpacity>
       </View>
       {passwordWarning ? (
@@ -150,21 +142,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   passwordContainer: {
+    width: "100%",
     flexDirection: "row",
     alignItems: "center",
-    width: "100%",
     marginVertical: 10,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 6,
-    backgroundColor: "#fff",
   },
-  passwordInput: {
-    flex: 1,
-    padding: 12,
-  },
-  showPasswordButton: {
-    padding: 10,
+  icon: {
+    position: "absolute",
+    right: 10,
   },
   warning: {
     color: "red",
