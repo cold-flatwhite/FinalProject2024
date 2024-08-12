@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,28 +8,46 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  Image,  // 导入 Image 组件
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { writeToDB } from "../firebase/firebaseHelpers";
-import { auth } from "../firebase/firebaseSetups";
+import { auth, storage } from "../firebase/firebaseSetups";  // 导入 storage
+import { getDownloadURL, ref } from "firebase/storage";  // 导入 Firebase Storage 函数
 
 export default function PostOrderScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { provider } = route.params;
 
+  const [imageUrl, setImageUrl] = useState(null); // 保存图像URL的状态
+  const [request, setRequest] = useState("");
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [requestOpen, setRequestOpen] = useState(false);
+
   const requestItems = provider.services.map((service) => ({
     label: service,
     value: service,
   }));
 
-  const [request, setRequest] = useState("");
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  useEffect(() => {
+    const fetchImageUrl = async () => {
+      if (provider.imageUri) { // 确保存在图像路径
+        try {
+          const reference = ref(storage, provider.imageUri);
+          const url = await getDownloadURL(reference);
+          setImageUrl(url); // 将图像URL保存到状态中
+        } catch (error) {
+          console.error("Error fetching image URL: ", error);
+        }
+      }
+    };
 
-  const [requestOpen, setRequestOpen] = useState(false);
+    fetchImageUrl();
+  }, [provider.imageUri]);
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -75,6 +93,9 @@ export default function PostOrderScreen() {
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
         <View style={styles.providerInfoContainer}>
+          {imageUrl && (
+            <Image source={{ uri: imageUrl }} style={styles.providerImage} />
+          )}
           <View style={styles.name}>
             <Text style={styles.providerName}>{provider.name}</Text>
             <Text style={styles.providerExperience}>
@@ -83,7 +104,7 @@ export default function PostOrderScreen() {
           </View>
 
           <Text style={styles.providerAddress}>
-            Adress : {provider.address}
+            Address : {provider.address}
           </Text>
           <Text style={styles.providerContact}>Contact: {provider.email}</Text>
         </View>
@@ -101,7 +122,6 @@ export default function PostOrderScreen() {
           zIndex={1000}
           zIndexInverse={1000}
         />
-
 
         <Text style={styles.label}>Date</Text>
         <TextInput
@@ -157,10 +177,16 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderWidth: 1,
     borderColor: "#ddd",
+    alignItems: "center",  // 将内容居中
+  },
+  providerImage: { // 样式设置为图片
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
   name: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",  // 将名字居中
   },
   providerName: {
     fontSize: 15,
