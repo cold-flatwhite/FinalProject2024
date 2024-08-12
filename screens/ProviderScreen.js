@@ -1,3 +1,5 @@
+// ProviderScreen.js
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,10 +9,10 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
 import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
 import { auth } from "../firebase/firebaseSetups";
+import ImageManager from "../components/ImageManager"; // 导入 ImageManager 组件
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -18,6 +20,7 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null); // 保存选中的图片
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
@@ -54,6 +57,9 @@ export default function ProviderScreen() {
               }))
             );
           }
+          if (providerProfile.imageUri) {
+            setSelectedImage(providerProfile.imageUri); // 加载已保存的图片
+          }
         }
       } catch (error) {
         console.error("Error loading user profile", error);
@@ -87,6 +93,7 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
+      imageUri: selectedImage, // 保存图片路径
     };
 
     try {
@@ -107,7 +114,11 @@ export default function ProviderScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={require("../assets/petcare.jpg")} />
+        {!selectedImage ? (
+          <ImageManager onImageTaken={setSelectedImage} />
+        ) : (
+          <Image style={styles.image} source={{ uri: selectedImage }} />
+        )}
       </View>
 
       <View style={styles.inputContainer}>
