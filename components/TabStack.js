@@ -1,4 +1,3 @@
-// TabStack.js
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import SearchScreen from "../screens/SearchScreen";
@@ -14,50 +13,52 @@ const Tab = createBottomTabNavigator();
 const TabStack = ({ navigation }) => {
   return (
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
+        headerStyle: { backgroundColor: "#4169E1" },
+        headerTintColor: "white",
         headerRight: () => (
           <FontAwesome5
             name="user-circle"
             size={24}
-            color="black"
+            color="white"
             onPress={() => navigation.navigate("Profile")}
             style={{ marginRight: 10 }}
           />
         ),
-      }}
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          if (route.name === "Search") {
+            iconName = "search1";
+            return (
+              <AntDesign name={iconName} size={size} color={focused ? "#4169E1" : "gray"} />
+            );
+          } else if (route.name === "Provider") {
+            iconName = "application";
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={focused ? "#4169E1" : "gray"}
+              />
+            );
+          } else if (route.name === "My Orders") {
+            iconName = "history";
+            return (
+              <FontAwesome
+                name={iconName}
+                size={size}
+                color={focused ? "#4169E1" : "gray"}
+              />
+            );
+          }
+        },
+        tabBarActiveTintColor: "#4169E1", // Optional, for text color of the active tab
+        tabBarInactiveTintColor: "gray",  // Optional, for text color of the inactive tabs
+      })}
     >
-      <Tab.Screen
-        name="Search"
-        component={SearchScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="search1" size={24} color="black" />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Provider"
-        component={ProviderScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons
-              name="application"
-              size={24}
-              color="black"
-            />
-          ),
-          title: "Provider Signup",
-        }}
-      />
-      <Tab.Screen
-        name="My Orders"
-        component={OrderScreen}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="history" size={24} color="black" />
-          ),
-        }}
-      />
+      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Provider" component={ProviderScreen} options={{ title: "Provider Signup" }} />
+      <Tab.Screen name="My Orders" component={OrderScreen} />
     </Tab.Navigator>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import OrderInfoScreen from "./screens/OrderInfoScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 import LoginScreen from "./screens/LoginScreen";
@@ -13,10 +12,9 @@ import { auth } from "./firebase/firebaseSetups";
 import { onAuthStateChanged } from "firebase/auth";
 
 const Stack = createNativeStackNavigator();
-const Tab = createBottomTabNavigator();
 
 const defaultSetting = ({ navigation }) => ({
-  headerStyle: { backgroundColor: "darkmagenta" },
+  headerStyle: { backgroundColor: "#4169E1" },
   headerTintColor: "white",
 });
 
@@ -33,6 +31,7 @@ const AuthStack = (
       component={LoginScreen}
       options={{ headerShown: false }}
     />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
   </>
 );
 

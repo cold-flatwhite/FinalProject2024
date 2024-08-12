@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#fff",
+    backgroundColor: "#E6F0FA",
   },
   mapImage: {
     width: 350,

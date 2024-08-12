@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#E6F0FA",
   },
   inputContainer: {
     flexDirection: "row",
@@ -210,6 +210,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
+    marginBottom : 30,
   },
   buttonText: {
     color: "white",
