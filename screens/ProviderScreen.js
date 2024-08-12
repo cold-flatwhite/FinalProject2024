@@ -6,11 +6,13 @@ import {
   Switch,
   ScrollView,
   Alert,
+  Image,
 } from "react-native";
 import PressableButton from "../components/PressableButton";
 import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
-import { auth } from "../firebase/firebaseSetups";
-import ImageManager from "../components/ImageManager"; // 导入 ImageManager 组件
+import { auth, storage } from "../firebase/firebaseSetups";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import ImageManager from "../components/ImageManager";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -18,7 +20,7 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null); // 保存选中的图片URI
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
@@ -56,7 +58,9 @@ export default function ProviderScreen() {
             );
           }
           if (providerProfile.imageUri) {
-            setSelectedImage(providerProfile.imageUri); // 加载已保存的图片
+            const reference = ref(storage, providerProfile.imageUri);
+            const url = await getDownloadURL(reference);
+            setSelectedImage(url); // 加载并设置图片URL
           }
         }
       } catch (error) {
@@ -86,16 +90,36 @@ export default function ProviderScreen() {
     setSelectedImage(uri); // 保存拍摄的图片URI
   };
 
+  const uploadImageToStorage = async (uri) => {
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+      const imageRef = ref(storage, `images/${imageName}`);
+      const uploadResult = await uploadBytesResumable(imageRef, blob);
+      return uploadResult.metadata.fullPath; // 返回图片在 Firebase Storage 中的路径
+    } catch (error) {
+      console.error("Error uploading image: ", error);
+      Alert.alert("Error", "Failed to upload image.");
+      return null;
+    }
+  };
+
   const handleSubmit = async () => {
     const selectedServices = services
       .filter((service) => service.selected)
       .map((service) => service.value);
 
+    let imageUriInStorage = null;
+    if (selectedImage) {
+      imageUriInStorage = await uploadImageToStorage(selectedImage);
+    }
+
     const data = {
       experience,
       openForWork,
       services: selectedServices,
-      imageUri: selectedImage, // 将图片URI与其他数据一起保存
+      imageUri: imageUriInStorage, // 将上传后的图片路径存储在 Firestore 中
     };
 
     try {
@@ -116,8 +140,7 @@ export default function ProviderScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageManager onImageTaken={handleImageTaken} />
-        {/* 移除重复显示的图片 */}
+        <ImageManager onImageTaken={handleImageTaken} selectedImage={selectedImage} />
       </View>
 
       <View style={styles.inputContainer}>
@@ -172,7 +195,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#E6F0FA",
+    backgroundColor: "#fff",
   },
   inputContainer: {
     flexDirection: "row",
@@ -210,7 +233,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: "center",
-    marginBottom : 30,
   },
   buttonText: {
     color: "white",
@@ -218,4 +240,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
