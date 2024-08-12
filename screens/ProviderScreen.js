@@ -6,12 +6,13 @@ import {
   Switch,
   ScrollView,
   Alert,
+  Image,
 } from "react-native";
 import PressableButton from "../components/PressableButton";
 import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
 import { auth, storage } from "../firebase/firebaseSetups";
-import { ref, uploadBytesResumable } from "firebase/storage"; // 导入 Firebase Storage 的函数
-import ImageManager from "../components/ImageManager"; // 导入 ImageManager 组件
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import ImageManager from "../components/ImageManager";
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -19,7 +20,7 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null); // 保存选中的图片URI
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
@@ -57,7 +58,9 @@ export default function ProviderScreen() {
             );
           }
           if (providerProfile.imageUri) {
-            setSelectedImage(providerProfile.imageUri); // 加载已保存的图片
+            const reference = ref(storage, providerProfile.imageUri);
+            const url = await getDownloadURL(reference);
+            setSelectedImage(url); // 加载并设置图片URL
           }
         }
       } catch (error) {
@@ -137,7 +140,7 @@ export default function ProviderScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
-        <ImageManager onImageTaken={handleImageTaken} />
+        <ImageManager onImageTaken={handleImageTaken} selectedImage={selectedImage} />
       </View>
 
       <View style={styles.inputContainer}>
