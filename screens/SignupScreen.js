@@ -21,8 +21,8 @@ const SignupScreen = () => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      Alert.alert("Success", "User registered successfully");
-      navigation.navigate("Main");
+      Alert.alert("Profile Incomplete", "Please complete your profile first.");
+      navigation.navigate("Profile");
     } catch (error) {
       let message;
       switch (error.code) {

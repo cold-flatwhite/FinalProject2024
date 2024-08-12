@@ -31,6 +31,7 @@ const AuthStack = (
       component={LoginScreen}
       options={{ headerShown: false }}
     />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
   </>
 );
 
