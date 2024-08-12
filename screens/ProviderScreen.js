@@ -1,16 +1,16 @@
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   Switch,
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useState, useEffect } from "react";
 import PressableButton from "../components/PressableButton";
 import { setToDB, getFromDB, updateToDB } from "../firebase/firebaseHelpers";
 import { auth } from "../firebase/firebaseSetups";
+import ImageManager from "../components/ImageManager"; // 导入 ImageManager 组件
 
 export default function ProviderScreen() {
   const [name, setName] = useState("");
@@ -18,6 +18,7 @@ export default function ProviderScreen() {
   const [email, setEmail] = useState("");
   const [experience, setExperience] = useState(false);
   const [openForWork, setOpenForWork] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null); // 保存选中的图片URI
 
   const [services, setServices] = useState([
     { label: "Dog Walking", value: "dogWalking", selected: false },
@@ -54,6 +55,9 @@ export default function ProviderScreen() {
               }))
             );
           }
+          if (providerProfile.imageUri) {
+            setSelectedImage(providerProfile.imageUri); // 加载已保存的图片
+          }
         }
       } catch (error) {
         console.error("Error loading user profile", error);
@@ -78,6 +82,10 @@ export default function ProviderScreen() {
     setServices(updatedServices);
   };
 
+  const handleImageTaken = (uri) => {
+    setSelectedImage(uri); // 保存拍摄的图片URI
+  };
+
   const handleSubmit = async () => {
     const selectedServices = services
       .filter((service) => service.selected)
@@ -87,6 +95,7 @@ export default function ProviderScreen() {
       experience,
       openForWork,
       services: selectedServices,
+      imageUri: selectedImage, // 将图片URI与其他数据一起保存
     };
 
     try {
@@ -107,7 +116,8 @@ export default function ProviderScreen() {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
-        <Image style={styles.image} source={require("../assets/petcare.jpg")} />
+        <ImageManager onImageTaken={handleImageTaken} />
+        {/* 移除重复显示的图片 */}
       </View>
 
       <View style={styles.inputContainer}>
@@ -180,11 +190,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "gray",
   },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 75,
-  },
   imageContainer: {
     justifyContent: "center",
     alignItems: "center",
@@ -212,3 +217,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
