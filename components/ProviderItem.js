@@ -1,28 +1,9 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { getFromDB } from "../firebase/firebaseHelpers";
 
 export default function ProviderItem({ provider, style }) {
   const navigation = useNavigation();
-  const [providerData, setProviderData] = useState(null);
-
-  useEffect(() => {
-    const fetchProviderData = async () => {
-      try {
-        // Fetch user details from the 'users' collection
-        const userDoc = await getFromDB(provider.id, "users");
-        if (userDoc) {
-          setProviderData({ ...provider, ...userDoc });
-        } else {
-          console.error("No user data found");
-        }
-      } catch (error) {
-        console.error("Error fetching provider data: ", error);
-      }
-    };
-    fetchProviderData();
-  }, []);
 
   return (
     <View key={provider.id} style={[styles.card, style]}>
@@ -63,7 +44,7 @@ export default function ProviderItem({ provider, style }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#6495ED",
     padding: 15,
     marginVertical: 10,
     marginHorizontal: 20,
@@ -82,7 +63,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: "bold",
-    flex: 2,
+    flex: 2
   },
   experienceBox: {
     borderRadius: 5,

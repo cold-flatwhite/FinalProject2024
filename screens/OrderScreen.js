@@ -108,7 +108,7 @@ export default function OrderScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#E6F0FA",
     padding: 10,
   },
 });

@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  FlatList,
-  SafeAreaView,
-  StyleSheet,
-} from "react-native";
+import { View, Text, FlatList, SafeAreaView, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import { database } from "../firebase/firebaseSetups";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -73,16 +67,13 @@ export default function SearchScreen() {
           onPress={handlePlaceSelect}
           query={{
             key: mapsApiKey,
-            language: 'en',
-            types: 'geocode',
+            language: "en",
+            types: "geocode",
           }}
-          fetchDetails={true} 
+          fetchDetails={true}
           styles={autocompleteStyles}
         />
-        <MapView
-          style={styles.map}
-          region={region} 
-        >
+        <MapView style={styles.map} region={region}>
           {providers.map((provider) => (
             <Marker
               key={provider.id}
@@ -101,9 +92,9 @@ export default function SearchScreen() {
         </MapView>
       </View>
       <View style={styles.bottomContainer}>
-        <Text>Available Providers</Text>
+        <Text style={styles.title}>Available Providers</Text>
         {providers.length === 0 ? (
-          <Text>There are no providers</Text>
+          <Text style={styles.noProvidersText}>There are no providers</Text>
         ) : (
           <FlatList
             renderItem={({ item }) => {
@@ -127,7 +118,7 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#4169E1",
     justifyContent: "center",
   },
   topContainer: {
@@ -137,7 +128,7 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flex: 1,
-    backgroundColor: "#dcd",
+    backgroundColor: "#E6F0FA",
     paddingHorizontal: 10,
   },
   map: {
@@ -150,21 +141,37 @@ const styles = StyleSheet.create({
     borderColor: "#4682b4",
     borderWidth: 2,
   },
+  title: {
+    fontSize: 20, // Increased font size for emphasis
+    fontWeight: "bold",
+    color: "#4169E1", // Use the main blue color for consistency
+  },
+  noProvidersText: {
+    fontSize: 18,
+    color: "#696969", // A neutral gray color
+    textAlign: "center",
+    marginTop: 20,
+  },
 });
 
 const autocompleteStyles = StyleSheet.create({
   container: {
     flex: 0,
     width: "100%",
+    backgroundColor: "#4169E1",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   textInput: {
     height: 40,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderWidth: 1,
     paddingHorizontal: 10,
     marginBottom: 10,
   },
   listView: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
 });
