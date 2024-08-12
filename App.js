@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -23,8 +23,16 @@ const defaultSetting = ({ navigation }) => ({
 // Authentication Stack
 const AuthStack = (
   <>
-    <Stack.Screen name="Signup" component={SignupScreen} />
-    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen
+      name="Signup"
+      component={SignupScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen
+      name="Login"
+      component={LoginScreen}
+      options={{ headerShown: false }}
+    />
   </>
 );
 

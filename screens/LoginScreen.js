@@ -4,12 +4,15 @@ import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { getFromDB } from "../firebase/firebaseHelpers";
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordWarning, setPasswordWarning] = useState("");
   const navigation = useNavigation();
+  const [fontsLoaded] = useFonts({ Inter_900Black });
+
 
   const handleLogin = async () => {
     if (password.length < 6) {
@@ -51,13 +54,13 @@ const LoginScreen = () => {
           message = error.message;
           break;
       }
-      Alert.alert("Error", message);
+      Alert.alert("Attention", message);
     }
   };
 
   const handlePasswordReset = async () => {
     if (!email) {
-      Alert.alert("Error", "Please enter your email to reset the password.");
+      Alert.alert("Attention", "Please enter your email to reset the password.");
       return;
     }
     try {
@@ -70,6 +73,7 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
+            <Text style={styles.title}>Petopia</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -106,6 +110,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     backgroundColor: "#f7f7f7",
+  },
+  title: {
+    fontSize: 50,
+    fontFamily: 'Inter_900Black',
+    marginBottom: 24,
+    color: "#1E90FF",
   },
   input: {
     width: "100%",

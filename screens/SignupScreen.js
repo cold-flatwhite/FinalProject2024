@@ -3,12 +3,14 @@ import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigation = useNavigation();
+  const [fontsLoaded] = useFonts({ Inter_900Black });
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -46,6 +48,7 @@ const SignupScreen = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Petopia</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -83,6 +86,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 16,
     backgroundColor: "#f7f7f7",
+  },
+  title: {
+    fontSize: 50,
+    fontFamily: 'Inter_900Black',
+    marginBottom: 24,
+    color: "#1E90FF",
   },
   input: {
     width: "100%",
