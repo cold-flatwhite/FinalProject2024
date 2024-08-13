@@ -3,7 +3,7 @@
 ## Data model and Collections
 Our data model consists of the following three collections:
 1. **users** - Stores basic user information such as name, address, email, and location.
-2. **providers** - Stores detailed information about service providers, including name, experience, services offered, open for work status, and profile image.
+2. **providers** - Stores detailed information about service providers, including experience, services offered, open for work status, and profile image.
 3. **orders** - Stores detailed information about orders, including request content, date, user ID, provider ID, and order status.
 
 
@@ -15,7 +15,7 @@ Our data model consists of the following three collections:
 - **Update**: Update the user document when the user updates their profile, allowing modifications to name, address, email, and location.
 
 ### providers Collection
-- **Create**: Register as a provider and create a provider document. Store provider information such as name, email, address, services offered, open status, experience, and profile image.
+- **Create**: Register as a provider and create a provider document. Store provider information such as services offered, open status, experience, and profile image.
 - **Read**: Fetch provider information to display in search results on the search screen. Show existing providers to users, including their profile image.
 - **Update**: Update the provider document when the provider modifies their profile information, including their image and services offered.
 
@@ -25,6 +25,12 @@ Our data model consists of the following three collections:
 - **Update**: Providers can accept or reject orders, which updates the order status. Clients can also update their orders, such as canceling them.
 - **Delete**: Delete order documents when the order is canceled by the client.
 
+## These functionalities are added in this iteration2:
+- **Authentication**:  Added forgot password functionality, allowing users to reset their passwords via email. Implemented all other authentication-related functionalities, including password visibility toggling,
+     user registration, and error handling during the authentication process.
+- **Camera use**: Integrated Expo Image Picker to allow users to upload or take profile pictures. Added functionality to store and retrieve profile images from Firebase Storage. Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
+- **Location use**:Implemented location tracking using Expo Location and Google Maps API, Added functionality to display user or provider locations on an interactive map.
+- **External API use**: Google places, change the coordinates to readable address, and GooglePlacesAutocomplete.
 
 ## Current State of the Application
 We have implemented user registration, login, profile management, provider registration, order creation, order management functionalities, image management, location services, and notification scheduling.
