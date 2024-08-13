@@ -2,18 +2,18 @@ import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-export default function ProviderItem({ provider }) {
+export default function ProviderItem({ provider, style }) {
   const navigation = useNavigation();
 
   return (
-    <View key={provider.id} style={styles.card}>
+    <View key={provider.id} style={[styles.card, style]}>
       <Pressable
         onPress={() => {
           navigation.navigate("PostOrderScreen", { provider });
         }}
       >
         <View style={styles.headerRow}>
-          <Text style={styles.name}>{provider.name}</Text>
+          <Text style={styles.name}>{provider?.name}</Text>
           <View
             style={[
               styles.experienceBox,
@@ -26,7 +26,7 @@ export default function ProviderItem({ provider }) {
           </View>
         </View>
         <View style={styles.body}>
-          <Text style={styles.address}>Address: {provider.address}</Text>
+          <Text style={styles.address}>Address: {provider.addressDisplay}</Text>
           {provider.openForWork && provider.services.length > 0 && (
             <View style={styles.servicesTags}>
               {provider.services.map((service, index) => (
@@ -44,7 +44,7 @@ export default function ProviderItem({ provider }) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
+    backgroundColor: "#6495ED",
     padding: 15,
     marginVertical: 10,
     marginHorizontal: 20,
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 18,
     fontWeight: "bold",
-    flex: 2,
+    flex: 2
   },
   experienceBox: {
     borderRadius: 5,

@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet, Alert } from "react-native";
+import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
+import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
+import Feather from '@expo/vector-icons/Feather';
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
   const navigation = useNavigation();
+  const [fontsLoaded] = useFonts({ Inter_900Black });
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
@@ -16,17 +20,29 @@ const SignupScreen = () => {
       return;
     }
 
+    // Password complexity check using regex
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    if (!passwordRegex.test(password)) {
+      Alert.alert("Error", "Password must be at least 6 characters long and contain both letters and numbers.");
+      return;
+    }
+
+    // Check if an account with the provided email already exists
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+      if (signInMethods.length > 0) {
+        Alert.alert("Error", "Account already exists"); 
+        return;
+      }
+
+      // Create a new user account using Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      Alert.alert("Success", "User registered successfully");
-      navigation.navigate("Main");
+      Alert.alert("Profile Incomplete", "Please complete your profile first.");
+      navigation.navigate("Profile");
     } catch (error) {
       let message;
+      // Handle different registration errors and display appropriate messages
       switch (error.code) {
         case "auth/email-already-in-use":
           message = "The email address is already in use by another account.";
@@ -48,29 +64,46 @@ const SignupScreen = () => {
     }
   };
 
+  // Function to toggle password visibility on and off
+  const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Signup</Text>
+      <Text style={styles.title}>Petopia</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Confirm Password"
-        secureTextEntry
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          secureTextEntry={!isPasswordVisible} 
+          value={password}
+          onChangeText={setPassword}
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      <View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          secureTextEntry={!isPasswordVisible} 
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
+          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        </TouchableOpacity>
+      </View>
       <Button title="Register" onPress={handleRegister} />
       <Text style={styles.link} onPress={() => navigation.navigate("Login")}>
         Already Registered? Login
@@ -85,22 +118,36 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+    backgroundColor: "#E6F0FA",
   },
   title: {
-    fontSize: 24,
-    marginBottom: 16,
+    fontSize: 50,
+    fontFamily: 'Inter_900Black',
+    marginBottom: 24,
+    color: "#1E90FF",
   },
   input: {
     width: "100%",
-    padding: 8,
-    marginVertical: 8,
+    padding: 12,
+    marginVertical: 10,
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 4,
+    borderColor: "#ddd",
+    borderRadius: 6,
+    backgroundColor: "#fff",
+  },
+  passwordContainer: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  icon: {
+    position: "absolute",
+    right: 10,
   },
   link: {
     marginTop: 16,
-    color: "blue",
+    color: "#0066cc",
   },
 });
 
