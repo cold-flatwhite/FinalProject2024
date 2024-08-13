@@ -1,23 +1,23 @@
-# Petcare Provider Application
+# Petcare Provider Application - Petopia
 
 ## Data model and Collections
 Our data model consists of the following three collections:
-1. **users** - Stores basic user information such as name, address, and email.
-2. **providers** - Stores detailed information about service providers, including name, experience, services offered, and open for work status.
-3. **orders** - Stores detailed information about orders, including request content, breed, date, user ID, and provider ID.
+1. **users** - Stores basic user information such as name, address, email, and location.
+2. **providers** - Stores detailed information about service providers, including name, experience, services offered, open for work status, and profile image.
+3. **orders** - Stores detailed information about orders, including request content, date, user ID, provider ID, and order status.
 
 
 ## CRUD operations
 
 ### users Collection
-- **Create**: Create a user document upon registration. Store user information such as name, address, and email.
+- **Create**: Create a user document upon registration. Store user information such as name, address, email, and location.
 - **Read**: Fetch user information to display on the profile page. Ensure that users can see their current information upon login.
-- **Update**: Update the user document when the user updates their profile, allowing modifications to name, address, and email.
+- **Update**: Update the user document when the user updates their profile, allowing modifications to name, address, email, and location.
 
 ### providers Collection
-- **Create**: Register as a provider and create a provider document. Store provider information such as name, email, address, service offered, and open status.
-- **Read**: Fetch provider information to display in search results on the search screen. Show existing providers to users.
-- **Update**: Update the provider document when the provider modifies their profile information.
+- **Create**: Register as a provider and create a provider document. Store provider information such as name, email, address, services offered, open status, experience, and profile image.
+- **Read**: Fetch provider information to display in search results on the search screen. Show existing providers to users, including their profile image.
+- **Update**: Update the provider document when the provider modifies their profile information, including their image and services offered.
 
 ### orders Collection
 - **Create**: Create an order document when a user (client) places an order with a provider.
@@ -27,87 +27,105 @@ Our data model consists of the following three collections:
 
 
 ## Current State of the Application
-We have implemented user registration, login, profile management, provider registration, order creation, and order management functionalities.
+We have implemented user registration, login, profile management, provider registration, order creation, order management functionalities, image management, location services, and notification scheduling.
 
 ### Screenshots
 1. **Login Screen** - Users can log in using email and password.
-![login](https://github.com/user-attachments/assets/c0f98996-036a-4979-8ce1-4ca1236fe518)
+![login](https://github.com/user-attachments/assets/c1059aa3-5d40-4616-9811-9702a9fb99c0)
+
 2. **Signup Screen** - Users can create a new account
-![signup](https://github.com/user-attachments/assets/ad0516b8-0606-4770-9c6e-f7241fd0340f)
-3. **Profile Screen** - Users can view and update their personal information.
-![profile](https://github.com/user-attachments/assets/224cce29-3f60-4511-90fb-348410dcde24)
-4. **Search Screen** - Users can search on map(after we import map API) and check list of available petcare providers.
-![search](https://github.com/user-attachments/assets/d31cc0ae-b9f5-4ee4-bd77-0dee955a00d2)
-5. **Post Order Screen** - Users can view provider information and post their order.
-![post order](https://github.com/user-attachments/assets/7a3ed268-cccc-4b90-8d84-ca9a870939c4)
-6. **Provider Registration Screen** - Users can register as providers and offer services.
-![petcare register](https://github.com/user-attachments/assets/ce271794-16bb-4103-a693-53e7ecaae170)
+![signup](https://github.com/user-attachments/assets/89bd3f3c-7c9f-4724-889d-7309c3f101ea)
+
+3. **Profile Screen** - Users can view, update their personal information, and view their location on a map.
+![profile](https://github.com/user-attachments/assets/ae54c7cf-eddc-407d-878b-ff24aab32215)
+
+4. **Search Screen** - Users can search on a map and check a list of available petcare providers.
+![search](https://github.com/user-attachments/assets/3bafa752-54c4-4d14-b282-45590fed71b3)
+
+5. **Post Order Screen** - Users can view provider information, view the provider's image, and post their order.
+![postorder](https://github.com/user-attachments/assets/bf41ad2a-c767-4c1e-90c5-cdda7fec3655)
+
+6. **Provider Registration Screen** - Users can register as providers, upload their profile image, and offer services.
+![providersignup](https://github.com/user-attachments/assets/4f6388ef-3d8f-4eff-833f-b95b9ba94e87)
+
 7. **Order Screen** - Users can view and manage orders.
-![orders](https://github.com/user-attachments/assets/9b86fd11-e237-4a6e-92f8-3984aeaeb70d)
-8. **Order Information Screen** - Users can view order details and cancel the order.
-![order_info](https://github.com/user-attachments/assets/e0669105-d602-48fe-bac0-2fb1e146548e)
-9. and providers can confirm or reject orders.
-![order comfirm](https://github.com/user-attachments/assets/defc5b15-384a-4e90-ade5-8c32deb738af)
+![myorders](https://github.com/user-attachments/assets/98582d84-072f-4a6b-97a3-47467b12699f)
+
+8. **Order Information Screen** - Users can view order details, cancel the order, and providers can confirm or reject orders.
+![orderinfo](https://github.com/user-attachments/assets/caae6372-a8b8-41e6-b492-e55dc8d0efa2)
+
+9. **Location and Notification Features** - Users can view and update their location, and schedule notifications related to orders and profile updates. 
+![location](https://github.com/user-attachments/assets/13d11455-41c4-4863-8506-31c4bc6e122a)
 
 
 #### Contributions
 
 - **Xin SUN**:
 - 1. Search Screen:
-     I developed the SearchScreen component to display a list of available providers.
-     It uses Firestore to fetch provider data in real-time and updates the list accordingly.
-     The screen is divided into two sections: a top section with a placeholder for a map and a bottom section
-     that shows either a message when no providers are available or a FlatList of providers if they are present.
-     The ProviderItem component is used to render each provider in the list."
+     Developed the SearchScreen component to display a list of available providers.
+     Integrated Google Places API for location search and mapping functionalities.
+     Added real-time data fetching from Firestore for displaying providers on the map and in a list.
      
   2. Post Order Screen:
-     I created the PostOrderScreen component for placing orders.
-     Users can view provider details, select a service request and breed, set a date, and submit the order.
-     The component uses DropDownPicker for service and breed selection, DateTimePicker for date selection,
-     and upon confirmation, writes the order data to the database and navigates back to the main screen.
-     A cancel button is also provided to return to the main screen."
+     Created the PostOrderScreen component for placing orders.
+     Users can view provider details, select a service request, set a date, and submit the order.
+     Integrated Firebase Storage for handling provider profile images.
   
   3. Provider Registration Screen:
-     I created the ProviderScreen component to manage provider profiles.
-     It displays and updates user information like name, address, and email, along with toggles for experience and availability.
-     It also allows users to select services they offer if they are open for work and handles submission to the database.
-     
+     Developed the ProviderScreen component to manage provider profiles.
+     Integrated location tracking to store and display provider locations.
+     Added functionality to upload and display profile images using Firebase Storage.
+
   4. Order Screen:
-     I developed the OrderScreen component, which displays a list of orders.
-     It fetches orders from Firebase Firestore, including user and provider details,
-     and categorizes them as either 'post' or 'received.'
-     Orders are displayed in a FlatList with a loading spinner while data is being fetched.
-     The screen provides a visual distinction between different order types and statuses,
-     and navigates to an order details screen when an item is selected."
-     
-  5. Order Information Screen:
+     Developed the OrderInfoScreen component to display detailed information about orders.
+     Added functionality for providers to accept or reject orders and for clients to cancel them.
+
+  6. Order Information Screen:
      I created the OrderInfoScreen component to display detailed information about a specific order.
      It provides functionality for the current user to confirm or reject the order based on their role (provider or client).
      The screen shows relevant order details, such as client or provider information, request, and status.
      If the order is ongoing, providers can choose to confirm or reject it. The status is updated in Firebase Firestore,
-     and the user is alerted of the update’s success."
+     and the user is alerted of the update’s success
+     
+  8. Location Manager:
+     Implemented location tracking using Expo Location and Google Maps API.
+     Added functionality to display user or provider locations on an interactive map.
+
+  9. Notification Manager:
+     Integrated local notification functionality using Expo Notifications API.
+     Users can schedule and receive reminders related to their orders.
+
+  10. Authentication:
+     Added forgot password functionality, allowing users to reset their passwords via email.
+     
 
 - **Wanyi JIANG**:
 - 1. Login Screen:
-     The LoginScreen component provides a user interface for logging into the application.
-     It includes fields for entering email and password, and a login button that authenticates users using Firebase.
-     If login is successful, the user is navigated to the 'Main' screen.
-     The component also handles errors, displaying appropriate alerts for different authentication issues,
-     and provides a link to the signup screen for new users."
+     Developed the LoginScreen component for user authentication.
+     Integrated Firebase Authentication for email/password login.
+     Added input validation and error handling for user login.
+     Added input visibility.
      
-  3. Signup Screen:
-     I created the SignupScreen component to handle user registration.
-     It includes fields for email, password, and password confirmation.
-     On form submission, it checks for matching passwords, then attempts to create a new user with Firebase Authentication.
-     If successful, the user is navigated to the 'Main' screen; if not, appropriate error messages are displayed.
-     The screen also provides a link to navigate to the login page for already registered users."
+  2. Signup Screen:
+     Created the SignupScreen component for user registration.
+     Implemented password strength validation and user account creation using Firebase Authentication.
+     Added functionality to check if an account already exists before registration.
      
-  4. Profile Screen:
-     I created the ProfileScreen component to manage user profiles.
-     It displays and allows editing of user details like name, address, and email.
-     It retrieves and updates user data in Firebase. The component includes a 'Sign Out' button in the header for user logout.
-     Validation checks ensure all fields are filled and the email format is correct before updating the profile.
-     If sign out is successful, the user is navigated to the login screen."
+  3. Profile Screen:
+     Developed the ProfileScreen component for managing user profiles.
+     Implemented functionality for editing user information, including name, address, email.
+     Added a Sign Out button and ensured proper logout functionality using Firebase Authentication.
+
+  5. Camera & Image Functionality:
+     Integrated Expo Image Picker to allow users to upload or take profile pictures.
+     Added functionality to store and retrieve profile images from Firebase Storage.
+     Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
+
+  6. Authentication:
+     Implemented all other authentication-related functionalities, including password visibility toggling,
+     user registration, and error handling during the authentication process.
+
+
   
 
 
