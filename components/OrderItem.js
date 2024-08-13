@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 // Component to display an individual order
 const OrderItem = ({ order, onPress }) => {
@@ -13,7 +13,6 @@ const OrderItem = ({ order, onPress }) => {
       ]}
       onPress={onPress}
     >
-      <Image source={{ uri: order.image }} style={styles.image} />
       <View style={styles.orderDetails}>
         <View style={styles.headerContainer}>
           <Text style={styles.orderType}>
@@ -60,12 +59,6 @@ const styles = StyleSheet.create({
   },
   receivedOrderContainer: {
     backgroundColor: "#E8F5E9",
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 10,
-    marginRight: 10,
   },
   orderDetails: {
     flex: 1,

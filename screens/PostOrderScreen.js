@@ -8,21 +8,21 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
-  Image,  
+  Image,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { writeToDB } from "../firebase/firebaseHelpers";
-import { auth, storage } from "../firebase/firebaseSetups"; 
-import { getDownloadURL, ref } from "firebase/storage";  
+import { auth, storage } from "../firebase/firebaseSetups";
+import { getDownloadURL, ref } from "firebase/storage";
 
 export default function PostOrderScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { provider } = route.params;
 
-  const [imageUrl, setImageUrl] = useState(null); 
+  const [imageUrl, setImageUrl] = useState(null);
   const [request, setRequest] = useState("");
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -37,11 +37,11 @@ export default function PostOrderScreen() {
   // useEffect to fetch the provider's image URL from Firebase Storage
   useEffect(() => {
     const fetchImageUrl = async () => {
-      if (provider.imageUri) { 
+      if (provider.imageUri) {
         try {
           const reference = ref(storage, provider.imageUri);
           const url = await getDownloadURL(reference);
-          setImageUrl(url); 
+          setImageUrl(url);
         } catch (error) {
           console.error("Error fetching image URL: ", error);
         }
@@ -56,8 +56,8 @@ export default function PostOrderScreen() {
     const currentDate = selectedDate || date;
     setShowDatePicker(false);
     setDate(currentDate);
-  }; 
-  
+  };
+
   // Function to show the date picker
   const showDatepicker = () => {
     setShowDatePicker(true);
@@ -116,6 +116,22 @@ export default function PostOrderScreen() {
           <Text style={styles.providerContact}>Contact: {provider.email}</Text>
         </View>
 
+        <Text style={styles.label}>Date</Text>
+        <TextInput
+          style={styles.input}
+          value={date.toISOString().split("T")[0]}
+          onFocus={showDatepicker}
+          showSoftInputOnFocus={false}
+        />
+        {showDatePicker && (
+          <DateTimePicker
+            value={date}
+            mode="date"
+            display="inline"
+            onChange={onChangeDate}
+            style={styles.datePicker}
+          />
+        )}
         <Text style={styles.label}>Request</Text>
         <DropDownPicker
           open={requestOpen}
@@ -129,24 +145,6 @@ export default function PostOrderScreen() {
           zIndex={1000}
           zIndexInverse={1000}
         />
-
-        <Text style={styles.label}>Date</Text>
-        <TextInput
-          style={styles.input}
-          value={date.toISOString().split("T")[0]}
-          onFocus={showDatepicker}
-          showSoftInputOnFocus={false}
-        />
-
-        {showDatePicker && (
-          <DateTimePicker
-            value={date}
-            mode="date"
-            display="inline"
-            onChange={onChangeDate}
-            style={styles.datePicker}
-          />
-        )}
 
         <View style={styles.buttonRow}>
           <Pressable
@@ -171,7 +169,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#E6F0FA",
   },
   providerInfoContainer: {
     padding: 10,
@@ -184,16 +182,16 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderWidth: 1,
     borderColor: "#ddd",
-    alignItems: "center",  // 将内容居中
+    alignItems: "center", 
   },
-  providerImage: { // 样式设置为图片
+  providerImage: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 10,
   },
   name: {
-    alignItems: "center",  // 将名字居中
+    alignItems: "center", 
   },
   providerName: {
     fontSize: 15,
@@ -234,6 +232,7 @@ const styles = StyleSheet.create({
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop : 30,
   },
   button: {
     flex: 1,
