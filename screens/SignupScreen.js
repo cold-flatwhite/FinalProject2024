@@ -1,16 +1,27 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "firebase/auth";
-import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
-import Feather from '@expo/vector-icons/Feather';
+import {
+  createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
+} from "firebase/auth";
+import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
+import Feather from "@expo/vector-icons/Feather";
 
 const SignupScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
 
@@ -23,7 +34,10 @@ const SignupScreen = () => {
     // Password complexity check using regex
     const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;
     if (!passwordRegex.test(password)) {
-      Alert.alert("Error", "Password must be at least 6 characters long and contain both letters and numbers.");
+      Alert.alert(
+        "Error",
+        "Password must be at least 6 characters long and contain both letters and numbers."
+      );
       return;
     }
 
@@ -31,12 +45,16 @@ const SignupScreen = () => {
     try {
       const signInMethods = await fetchSignInMethodsForEmail(auth, email);
       if (signInMethods.length > 0) {
-        Alert.alert("Error", "Account already exists"); 
+        Alert.alert("Error", "Account already exists");
         return;
       }
 
       // Create a new user account using Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       Alert.alert("Profile Incomplete", "Please complete your profile first.");
       navigation.navigate("Profile");
@@ -84,24 +102,40 @@ const SignupScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={!isPasswordVisible} 
+          secureTextEntry={!isPasswordVisible}
+          textContentType="password"
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
-          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        <TouchableOpacity
+          onPress={togglePasswordVisibility}
+          style={styles.icon}
+        >
+          <Feather
+            name={isPasswordVisible ? "eye-off" : "eye"}
+            size={24}
+            color="black"
+          />
         </TouchableOpacity>
       </View>
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
-          secureTextEntry={!isPasswordVisible} 
+          secureTextEntry={!isPasswordVisible}
+          textContentType="password"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
         />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
-          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        <TouchableOpacity
+          onPress={togglePasswordVisibility}
+          style={styles.icon}
+        >
+          <Feather
+            name={isPasswordVisible ? "eye-off" : "eye"}
+            size={24}
+            color="black"
+          />
         </TouchableOpacity>
       </View>
       <Button title="Register" onPress={handleRegister} />
@@ -122,7 +156,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 50,
-    fontFamily: 'Inter_900Black',
+    fontFamily: "Inter_900Black",
     marginBottom: 24,
     color: "#1E90FF",
   },

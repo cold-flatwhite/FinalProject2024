@@ -64,6 +64,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     const loadProfile = async () => {
       const user = auth.currentUser;
+      console.log("user", user);
       if (!user) {
         Alert.alert("Error", "No user logged in");
         return;
@@ -71,6 +72,7 @@ const ProfileScreen = () => {
       const userId = user.uid;
       try {
         const userProfile = await getFromDB(userId, "users");
+
         if (userProfile) {
           setName(userProfile.name || "");
           setLocation(userProfile.location || null);
@@ -93,15 +95,7 @@ const ProfileScreen = () => {
       }
     };
     loadProfile();
-
-    navigation.setOptions({
-      headerRight: () => (
-        <Pressable style={styles.signOutButton} onPress={handleSignOut}>
-          <Text style={styles.signOutButtonText}>Sign Out</Text>
-        </Pressable>
-      ),
-    });
-  }, [navigation]);
+  }, [auth]);
 
   const handleUpdate = async () => {
     if (!name || !location || !email) {
@@ -198,7 +192,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
-    backgroundColor : "#E6F0FA",
+    backgroundColor: "#E6F0FA",
   },
   label: {
     flex: 1,
