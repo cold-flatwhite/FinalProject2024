@@ -11,7 +11,6 @@ import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelpers";
 import { auth } from "../firebase/firebaseSetups";
 import PressableButton from "../components/PressableButton";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { signOut } from "firebase/auth";
 import axios from "axios";
 import { mapsApiKey } from "@env";
 import LocationManager from "../components/LocationManager";
@@ -129,17 +128,6 @@ const ProfileScreen = () => {
     } catch (error) {
       console.error("Error updating profile data", error);
       Alert.alert("Error", "Error updating profile.");
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      Alert.alert("Success", "You have been signed out.");
-      navigation.navigate("Login");
-    } catch (error) {
-      console.error("Error signing out", error);
-      Alert.alert("Error", "Error signing out.");
     }
   };
 
