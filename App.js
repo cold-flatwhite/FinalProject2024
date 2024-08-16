@@ -10,6 +10,9 @@ import Map from "./screens/Map";
 import TabStack from "./components/TabStack";
 import { auth } from "./firebase/firebaseSetups";
 import { onAuthStateChanged } from "firebase/auth";
+import PressableButton from "./components/PressableButton";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { signOut } from "firebase/auth";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,16 +25,15 @@ const defaultSetting = ({ navigation }) => ({
 const AuthStack = (
   <>
     <Stack.Screen
-      name="Signup"
-      component={SignupScreen}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
       name="Login"
       component={LoginScreen}
       options={{ headerShown: false }}
     />
-    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen
+      name="Signup"
+      component={SignupScreen}
+      options={{ headerShown: false }}
+    />
   </>
 );
 
@@ -45,7 +47,27 @@ const AppStack = (
     />
     <Stack.Screen name="Order Information" component={OrderInfoScreen} />
     <Stack.Screen name="PostOrderScreen" component={PostOrderScreen} />
-    <Stack.Screen name="Profile" component={ProfileScreen} />
+    <Stack.Screen
+      name="Profile"
+      component={ProfileScreen}
+      options={{
+        headerRight: () => {
+          return (
+            <PressableButton
+              pressedFunction={async () => {
+                try {
+                  await signOut(auth);
+                } catch (err) {
+                  console.error("Error signing out:", err);
+                }
+              }}
+            >
+              <AntDesign name="logout" size={24} color="black" />
+            </PressableButton>
+          );
+        },
+      }}
+    />
     <Stack.Screen name="Map" component={Map} />
   </>
 );

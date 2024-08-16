@@ -11,7 +11,6 @@ import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelpers";
 import { auth } from "../firebase/firebaseSetups";
 import PressableButton from "../components/PressableButton";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { signOut } from "firebase/auth";
 import axios from "axios";
 import { mapsApiKey } from "@env";
 import LocationManager from "../components/LocationManager";
@@ -64,6 +63,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     const loadProfile = async () => {
       const user = auth.currentUser;
+      console.log("user", user);
       if (!user) {
         Alert.alert("Error", "No user logged in");
         return;
@@ -71,6 +71,7 @@ const ProfileScreen = () => {
       const userId = user.uid;
       try {
         const userProfile = await getFromDB(userId, "users");
+
         if (userProfile) {
           setName(userProfile.name || "");
           setLocation(userProfile.location || null);
@@ -93,15 +94,7 @@ const ProfileScreen = () => {
       }
     };
     loadProfile();
-
-    navigation.setOptions({
-      headerRight: () => (
-        <Pressable style={styles.signOutButton} onPress={handleSignOut}>
-          <Text style={styles.signOutButtonText}>Sign Out</Text>
-        </Pressable>
-      ),
-    });
-  }, [navigation]);
+  }, [auth]);
 
   const handleUpdate = async () => {
     if (!name || !location || !email) {
@@ -135,17 +128,6 @@ const ProfileScreen = () => {
     } catch (error) {
       console.error("Error updating profile data", error);
       Alert.alert("Error", "Error updating profile.");
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      Alert.alert("Success", "You have been signed out.");
-      navigation.navigate("Login");
-    } catch (error) {
-      console.error("Error signing out", error);
-      Alert.alert("Error", "Error signing out.");
     }
   };
 
@@ -198,7 +180,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
-    backgroundColor : "#E6F0FA",
+    backgroundColor: "#E6F0FA",
   },
   label: {
     flex: 1,
