@@ -1,16 +1,67 @@
-import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Switch } from "react-native";
 import { doc, updateDoc } from "firebase/firestore";
 import { database, auth } from "../firebase/firebaseSetups";
 import { deleteFromDb } from "../firebase/firebaseHelpers";
+import * as Notifications from "expo-notifications";
+import { scheduleOrderNotifications } from "../components/NotificationManager";
 
-// Component to handle and display information for an individual order
 export default function OrderInfoScreen({ route, navigation }) {
   const { order } = route.params;
   const currentUserID = auth.currentUser.uid;
 
   // Determine if the current user is the provider for the order
   const isProvider = order.provider_id === currentUserID;
+
+  // State to track the switch state
+  const [isSwitchEnabled, setIsSwitchEnabled] = useState(false);
+
+  // Function to handle switch toggle
+  const toggleSwitch = () => {
+    Alert.alert(
+      "Notification Permission",
+      "Do you allow this app to send notifications?",
+      [
+        {
+          text: "Don't Allow",
+          onPress: () => {
+            // Do not change the switch state
+            setIsSwitchEnabled(false);
+          },
+          style: "cancel",
+        },
+        {
+          text: "Allow",
+          onPress: async () => {
+            const newValue = !isSwitchEnabled;
+
+            if (newValue) {
+              // When switch is enabled, request notification permissions and schedule notifications
+              const hasPermission = await verifyAndScheduleNotification();
+              if (hasPermission) {
+                setIsSwitchEnabled(true);
+              } else {
+                Alert.alert("Permission Required", "You must allow notifications to enable this feature.");
+                setIsSwitchEnabled(false);
+              }
+            } else {
+              setIsSwitchEnabled(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Function to request notification permission and schedule notifications
+  const verifyAndScheduleNotification = async () => {
+    const hasPermission = await Notifications.requestPermissionsAsync();
+    if (hasPermission.status === "granted") {
+      await scheduleOrderNotifications(new Date(order.date));
+      return true;
+    }
+    return false;
+  };
 
   // Function to handle order confirmation
   const handleConfirm = async () => {
@@ -63,7 +114,6 @@ export default function OrderInfoScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.info}>Order number: {order.id}</Text>
-      {/* Conditional rendering based on whether the current user is the provider */}
       {isProvider ? (
         <>
           <Text style={styles.info}>
@@ -79,6 +129,17 @@ export default function OrderInfoScreen({ route, navigation }) {
           <Text style={styles.info}>
             Request Service Date: {new Date(order.date).toLocaleDateString()}
           </Text>
+          {/* New Section for Setting Reminders */}
+          <View style={styles.reminderContainer}>
+            <Text style={styles.reminderText}>Set Reminders for this order Today and Order Start Day</Text>
+            <Switch
+              trackColor={{ false: "#767577", true: "#81b0ff" }}
+              thumbColor={isSwitchEnabled ? "#f5dd4b" : "#f4f3f4"}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={isSwitchEnabled}
+            />
+          </View>
           {order.status === "Pending" ? (
             <View style={styles.buttonContainer}>
               <TouchableOpacity
@@ -100,7 +161,6 @@ export default function OrderInfoScreen({ route, navigation }) {
         </>
       ) : (
         <>
-          {/* Display provider details if the current user is not the provider */}
           <Text style={styles.info}>
             Provider Name: {order.providerData?.name || "N/A"}
           </Text>
@@ -128,6 +188,7 @@ export default function OrderInfoScreen({ route, navigation }) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -169,5 +230,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 20,
     color: "gray",
+  },
+  // New styles for reminders
+  reminderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  reminderText: {
+    fontSize: 16,
+    flex: 1,
   },
 });

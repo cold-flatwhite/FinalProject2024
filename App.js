@@ -13,6 +13,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import PressableButton from "./components/PressableButton";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { signOut } from "firebase/auth";
+import * as Notifications from "expo-notifications";
 
 const Stack = createNativeStackNavigator();
 
@@ -74,9 +75,9 @@ const AppStack = (
 
 const App = () => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log(user);
       if (user) {
         setIsUserAuthenticated(true);
       } else {
@@ -84,6 +85,26 @@ const App = () => {
       }
     });
     return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    // Listener for notification received while the app is running
+    const notificationListener = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("Notification received:", notification);
+      }
+    );
+
+    // Listener for when the user interacts with a notification
+    const responseListener =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log("Notification response received:", response);
+      });
+
+    return () => {
+      notificationListener.remove();
+      responseListener.remove();
+    };
   }, []);
 
   return (
