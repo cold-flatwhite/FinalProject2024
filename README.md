@@ -28,7 +28,7 @@ Our data model consists of the following three collections:
 ## These functionalities are added in this iteration2:
 - **Authentication**:  Added forgot password functionality, allowing users to reset their passwords via email. Implemented all other authentication-related functionalities, including password visibility toggling,
      user registration, and error handling during the authentication process.
-- **Camera use**: Integrated Expo Image Picker to allow users to upload or take profile pictures. Added functionality to store and retrieve profile images from Firebase Storage. Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
+- **Camera use**: Integrated Expo Image Picker to allow users to take profile pictures. Added functionality to store and retrieve profile images from Firebase Storage. Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
 - **Location use**:Implemented location tracking using Expo Location and Google Maps API, Added functionality to display user or provider locations on an interactive map.
 - **External API use**: Google places, change the coordinates to readable address, and GooglePlacesAutocomplete.
 
@@ -123,7 +123,7 @@ We have implemented user registration, login, profile management, provider regis
      Added a Sign Out button and ensured proper logout functionality using Firebase Authentication.
 
   5. Camera & Image Functionality:
-     Integrated Expo Image Picker to allow users to upload or take profile pictures.
+     Integrated Expo Image Picker to allow users to take provider pictures.
      Added functionality to store and retrieve profile images from Firebase Storage.
      Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
 

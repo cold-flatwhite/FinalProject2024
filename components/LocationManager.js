@@ -1,8 +1,10 @@
-import { StyleSheet, View, Image } from "react-native";
 import React, { useEffect, useState } from "react";
+import { View, Image } from "react-native";
 import { useRoute } from "@react-navigation/native";
+import styles from "../styles"; 
 import { mapsApiKey } from "@env";
 
+// LocationManager component for displaying a map image of a given location
 const LocationManager = ({ location: propLocation }) => {
   const [location, setLocation] = useState(null);
   const route = useRoute();
@@ -28,21 +30,5 @@ const LocationManager = ({ location: propLocation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    backgroundColor: "#E6F0FA",
-  },
-  mapImage: {
-    width: 350,
-    height: 200,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-});
 
 export default LocationManager;

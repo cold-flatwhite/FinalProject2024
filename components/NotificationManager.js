@@ -1,4 +1,3 @@
-// NotificationManager.js
 import * as Notifications from "expo-notifications";
 
 // Function to verify and request notification permissions
@@ -11,7 +10,7 @@ export const verifyPermission = async () => {
   return result.status === "granted";
 };
 
-// Function to schedule notifications
+// Function to schedule notifications for a given order date
 export const scheduleOrderNotifications = async (orderDate) => {
   const hasPermission = await verifyPermission();
   if (!hasPermission) {
@@ -20,16 +19,14 @@ export const scheduleOrderNotifications = async (orderDate) => {
   }
 
   try {
-    // Schedule immediate notification (trigger in 1 second)
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Order Reminder",
         body: `Order starts on ${orderDate.toLocaleDateString()}`,
       },
-      trigger: { seconds: 1 }, // Trigger 1 second later
+      trigger: { seconds: 1 },
     });
 
-    // Schedule notification for 8 AM on the service date
     const morningTrigger = new Date(orderDate);
     morningTrigger.setHours(8, 0, 0);
     const secondsUntilMorning = (morningTrigger.getTime() - Date.now()) / 1000;
@@ -40,7 +37,7 @@ export const scheduleOrderNotifications = async (orderDate) => {
           title: "Order Reminder",
           body: `Order starts on ${orderDate.toLocaleDateString()}`,
         },
-        trigger: { seconds: secondsUntilMorning }, // Trigger at 8 AM on the service date
+        trigger: { seconds: secondsUntilMorning },
       });
     } else {
       console.warn("The specified time for the 8 AM notification has already passed.");

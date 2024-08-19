@@ -1,6 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
+import { Pressable, View, Text } from "react-native";
+import styles from "../styles";
 
+// A customizable pressable button component
 const PressableButton = ({ children, pressedFunction, componentStyle }) => {
   return (
     <Pressable
@@ -17,21 +19,3 @@ const PressableButton = ({ children, pressedFunction, componentStyle }) => {
 };
 
 export default PressableButton;
-
-const styles = StyleSheet.create({
-  defaultStyle: {
-    padding: 5,
-    backgroundColor: "#0a9396",
-    borderRadius: 25,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
-    alignItems: "center",
-  },
-  pressableStyle: {
-    backgroundColor: "#005f73",
-    transform: [{ scale: 0.95 }],
-  },
-});

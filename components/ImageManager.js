@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Button, StyleSheet, Alert, Image } from "react-native";
+import { View, Text, Button, Alert, Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import styles from "../styles"; // Import styles from the shared styles file
 
 // ImageManager component that allows users to pick or take a picture.
 // It accepts two props: onImageTaken (a callback function to handle the image URI)
@@ -93,27 +94,5 @@ const ImageManager = ({ onImageTaken, selectedImage }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  imagePicker: {
-    alignItems: "center",
-    marginVertical: 15,
-  },
-  imagePreview: {
-    width: 150,
-    height: 150,
-    marginBottom: 10,
-    justifyContent: "center",
-    alignItems: "center",
-    borderColor: "#ccc",
-    borderWidth: 1,
-    borderRadius: 75,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-});
 
 export default ImageManager;
