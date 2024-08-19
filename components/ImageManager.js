@@ -89,7 +89,7 @@ const ImageManager = ({ onImageTaken, selectedImage }) => {
           <Image style={styles.image} source={{ uri: pickedImage }} />
         )}
       </View>
-      <Button title="Upload or Take Pictures" onPress={takeImageHandler} />
+      <Button title="Take Pictures" onPress={takeImageHandler} />
     </View>
   );
 };

@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
+// Array of images and corresponding text for the slides
 const images = [
   {
     id: '1',
@@ -29,19 +30,21 @@ const images = [
   },
 ];
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('window'); // Get screen width
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const [currentIndex, setCurrentIndex] = useState(0); // Track the current slide index
+  const scrollX = useRef(new Animated.Value(0)).current; // Animated value for scroll position
 
+  // Handle the end of scrolling to update the current index
   const handleScrollEnd = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
     const index = Math.floor(contentOffsetX / width);
     setCurrentIndex(index);
   };
 
+  // Render each slide with image and text
   const renderItem = ({ item }) => (
     <View style={styles.slide}>
       <Image source={item.source} style={styles.image} resizeMode="contain" />
@@ -52,16 +55,16 @@ const WelcomeScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={images}
-        renderItem={renderItem}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={handleScrollEnd}
-        keyExtractor={(item) => item.id}
+        data={images} // Data source for the FlatList
+        renderItem={renderItem} // Function to render each item
+        horizontal // Horizontal scroll direction
+        pagingEnabled // Snap to each slide
+        showsHorizontalScrollIndicator={false} // Hide scroll indicator
+        onMomentumScrollEnd={handleScrollEnd} // Update current index on scroll end
+        keyExtractor={(item) => item.id} // Unique key for each slide
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: false } // Animate based on scroll position
         )}
       />
       <View style={styles.dotsContainer}>
@@ -69,13 +72,13 @@ const WelcomeScreen = () => {
           const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
           const dotColor = scrollX.interpolate({
             inputRange,
-            outputRange: ['#d3d3d3', '#696969', '#d3d3d3'],
+            outputRange: ['#d3d3d3', '#696969', '#d3d3d3'], // Animate dot color based on scroll position
             extrapolate: 'clamp',
           });
           return <Animated.View key={index} style={[styles.dot, { backgroundColor: dotColor }]} />;
         })}
       </View>
-      {currentIndex === images.length - 1 && (
+      {currentIndex === images.length - 1 && ( // Show button on the last slide
         <TouchableOpacity style={styles.button} onPress={() => navigation.replace('Signup')}>
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
@@ -84,6 +87,7 @@ const WelcomeScreen = () => {
   );
 };
 
+// Styles for the screen
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
 export default function ProviderItem({ provider, style }) {
-  const navigation = useNavigation();
+  const navigation = useNavigation(); // Hook to access navigation
 
   return (
     <View key={provider.id} style={[styles.card, style]}>
