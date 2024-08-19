@@ -10,9 +10,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import {
-  createUserWithEmailAndPassword,
-  fetchSignInMethodsForEmail,
+import { createUserWithEmailAndPassword,fetchSignInMethodsForEmail,
 } from "firebase/auth";
 import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
 import Feather from "@expo/vector-icons/Feather";
