@@ -17,8 +17,9 @@ export default function SearchScreen() {
     longitude: -122.4324,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
-  });
+  });// Initial region for the map
 
+  // Effect to fetch providers from Firestore and update state
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(database, "providers"),
@@ -40,10 +41,12 @@ export default function SearchScreen() {
     return () => unsubscribe();
   }, []);
 
+  // Handle marker press to highlight selected provider
   const handleMarkerPress = (providerId) => {
     setSelectedProviderId(providerId);
   };
 
+  // Handle place selection from Google Places Autocomplete
   const handlePlaceSelect = (data, details) => {
     if (details && details.geometry && details.geometry.location) {
       const { geometry } = details;
@@ -53,7 +56,7 @@ export default function SearchScreen() {
         longitude: location.lng,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
-      });
+      }); // Update map region based on selected place
     } else {
       alert("Unable to retrieve location details");
     }

@@ -23,6 +23,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
+  // Function to fetch address from latitude and longitude using Google Maps API
   const fetchAddressFromCoordinates = async (latitude, longitude) => {
     try {
       const response = await axios.get(
@@ -42,6 +43,7 @@ const ProfileScreen = () => {
     }
   };
 
+  // Effect to update address display when location is passed via route params
   useEffect(() => {
     const updateAddressFromCoordinates = async () => {
       if (route.params?.location) {
@@ -60,6 +62,7 @@ const ProfileScreen = () => {
     updateAddressFromCoordinates();
   }, [route.params?.location]);
 
+  // Effect to load user profile data from the database
   useEffect(() => {
     const loadProfile = async () => {
       const user = auth.currentUser;
@@ -96,6 +99,7 @@ const ProfileScreen = () => {
     loadProfile();
   }, [auth]);
 
+  // Handler to update user profile in the database
   const handleUpdate = async () => {
     if (!name || !location || !email) {
       Alert.alert("Validation Error", "Please fill in all required fields.");

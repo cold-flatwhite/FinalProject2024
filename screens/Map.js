@@ -7,6 +7,7 @@ const Map = ({ navigation }) => {
   const [response, requestPermission] = Location.useForegroundPermissions();
   const [location, setLocation] = useState(null);
 
+  // Function to verify if location permission is granted
   async function verifyPermission() {
     if (response.granted) {
       return true;
@@ -15,6 +16,7 @@ const Map = ({ navigation }) => {
     return permissionResponse.granted;
   }
 
+  // Handler to locate the user and update location state
   const locateUserHandler = async () => {
     const hasPermission = await verifyPermission();
     if (!hasPermission) {
