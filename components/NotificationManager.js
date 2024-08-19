@@ -1,4 +1,3 @@
-// NotificationManager.js
 import * as Notifications from "expo-notifications";
 
 // Function to verify and request notification permissions
@@ -43,7 +42,7 @@ export const scheduleOrderNotifications = async (orderDate) => {
         trigger: { seconds: secondsUntilMorning }, // Trigger at 8 AM on the service date
       });
     } else {
-      console.warn("The specified time for the 8 AM notification has already passed.");
+      alert("Expected Order Start time has passed.");
     }
   } catch (err) {
     console.error("Error scheduling notifications:", err);
