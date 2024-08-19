@@ -8,6 +8,7 @@ import SignupScreen from "./screens/SignupScreen";
 import PostOrderScreen from "./screens/PostOrderScreen";
 import Map from "./screens/Map";
 import TabStack from "./components/TabStack";
+import WelcomeScreen from "./screens/WelcomeScreen"; // Import WelcomeScreen
 import { auth } from "./firebase/firebaseSetups";
 import { onAuthStateChanged } from "firebase/auth";
 import PressableButton from "./components/PressableButton";
@@ -25,6 +26,11 @@ const defaultSetting = ({ navigation }) => ({
 // Authentication Stack
 const AuthStack = (
   <>
+    <Stack.Screen
+      name="Welcome"
+      component={WelcomeScreen} // Set WelcomeScreen as the first screen
+      options={{ headerShown: false }}
+    />
     <Stack.Screen
       name="Login"
       component={LoginScreen}
