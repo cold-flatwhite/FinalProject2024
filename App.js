@@ -8,7 +8,7 @@ import SignupScreen from "./screens/SignupScreen";
 import PostOrderScreen from "./screens/PostOrderScreen";
 import Map from "./screens/Map";
 import TabStack from "./components/TabStack";
-import WelcomeScreen from "./screens/WelcomeScreen"; // Import WelcomeScreen
+import WelcomeScreen from "./screens/WelcomeScreen"; 
 import { auth } from "./firebase/firebaseSetups";
 import { onAuthStateChanged } from "firebase/auth";
 import PressableButton from "./components/PressableButton";
