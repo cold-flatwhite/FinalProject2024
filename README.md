@@ -21,6 +21,7 @@ https://docs.google.com/presentation/d/1VbsEOHozrT9_s2OrqqinCqF1L0ODcfVpq0p4-fF0
 https://youtu.be/cJoJIx9irjw 
 
 
+
 ## These functionalities are added in this iteration3:
 - **Authentication**:  1. Added textContentType attribute for password text input. 2. Added Welcome screen providing information about the app there to encourage new users to sign up.
 - **Notification**: Enabled petcare provider who has recieved order to schedule local notification as reminders for order start day.
@@ -119,18 +120,18 @@ Authentication; Camera use; Location use; Notification; External API use
      Developed the OrderInfoScreen component to display detailed information about orders.
      Added functionality for providers to accept or reject orders and for clients to cancel them.
 
-  6. Order Information Screen:
+  5. Order Information Screen:
      Created the OrderInfoScreen component to display detailed information about a specific order.
      It provides functionality for the current user to confirm or reject the order based on their role (provider or client).
      The screen shows relevant order details, such as client or provider information, request, and status.
      If the order is ongoing, providers can choose to confirm or reject it. The status is updated in Firebase Firestore,
      and the user is alerted of the update’s success
      
-  8. Location Manager:
+  6. Location Manager:
      Implemented location tracking using Expo Location and Google Maps API.
      Added functionality to display user or provider locations on an interactive map.
 
-  9. Authentication:
+  7. Authentication:
      Added forgot password functionality, allowing users to reset their passwords via email.
      
 
