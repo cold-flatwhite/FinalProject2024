@@ -1,5 +1,26 @@
 # Petcare Provider Application - Petopia
 
+## Introduction
+**🙋 What does Petopia do?**
+A platform that connects pet service providers with pet owners looking for services like dog walking, pet sitting, grooming, and training.
+
+**🧐 Why do people use this app?**
+Many pet owners struggle to find reliable and convenient services for their pets. The demand for trusted pet care professionals is increasing.
+
+**🌟 What’s unique about Petopia?**
+Provide a platform that simplifies the process of finding and booking pet services.
+
+**🧑‍💻Contributors**
+Xin SUN & Wanyi JIANG (Janet)
+
+
+## Presentation
+https://docs.google.com/presentation/d/1VbsEOHozrT9_s2OrqqinCqF1L0ODcfVpq0p4-fF0RhU/edit?usp=sharing
+
+## Demo
+https://youtu.be/cJoJIx9irjw 
+
+
 ## Data model and Collections
 Our data model consists of the following three collections:
 1. **users** - Stores basic user information such as name, address, email, and location.
