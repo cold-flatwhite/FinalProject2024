@@ -2,16 +2,16 @@
 
 ## Introduction
 **🙋 What does Petopia do?**
-A platform that connects pet service providers with pet owners looking for services like dog walking, pet sitting, grooming, and training.
+- A platform that connects pet service providers with pet owners looking for services like dog walking, pet sitting, grooming, and training.
 
 **🧐 Why do people use this app?**
-Many pet owners struggle to find reliable and convenient services for their pets. The demand for trusted pet care professionals is increasing.
+- Many pet owners struggle to find reliable and convenient services for their pets. The demand for trusted pet care professionals is increasing.
 
 **🌟 What’s unique about Petopia?**
-Provide a platform that simplifies the process of finding and booking pet services.
+- Provide a platform that simplifies the process of finding and booking pet services.
 
 **🧑‍💻Contributors**
-Xin SUN & Wanyi JIANG (Janet)
+- Xin SUN & Wanyi JIANG (Janet)
 
 
 ## Presentation
