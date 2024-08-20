@@ -11,7 +11,6 @@ import { getFromDB, setToDB, updateToDB } from "../firebase/firebaseHelpers";
 import { auth } from "../firebase/firebaseSetups";
 import PressableButton from "../components/PressableButton";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { signOut } from "firebase/auth";
 import axios from "axios";
 import { mapsApiKey } from "@env";
 import LocationManager from "../components/LocationManager";
@@ -24,6 +23,7 @@ const ProfileScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
 
+  // Function to fetch address from latitude and longitude using Google Maps API
   const fetchAddressFromCoordinates = async (latitude, longitude) => {
     try {
       const response = await axios.get(
@@ -43,6 +43,7 @@ const ProfileScreen = () => {
     }
   };
 
+  // Effect to update address display when location is passed via route params
   useEffect(() => {
     const updateAddressFromCoordinates = async () => {
       if (route.params?.location) {
@@ -61,9 +62,11 @@ const ProfileScreen = () => {
     updateAddressFromCoordinates();
   }, [route.params?.location]);
 
+  // Effect to load user profile data from the database
   useEffect(() => {
     const loadProfile = async () => {
       const user = auth.currentUser;
+      console.log("user", user);
       if (!user) {
         Alert.alert("Error", "No user logged in");
         return;
@@ -71,6 +74,7 @@ const ProfileScreen = () => {
       const userId = user.uid;
       try {
         const userProfile = await getFromDB(userId, "users");
+
         if (userProfile) {
           setName(userProfile.name || "");
           setLocation(userProfile.location || null);
@@ -93,16 +97,9 @@ const ProfileScreen = () => {
       }
     };
     loadProfile();
+  }, [auth]);
 
-    navigation.setOptions({
-      headerRight: () => (
-        <Pressable style={styles.signOutButton} onPress={handleSignOut}>
-          <Text style={styles.signOutButtonText}>Sign Out</Text>
-        </Pressable>
-      ),
-    });
-  }, [navigation]);
-
+  // Handler to update user profile in the database
   const handleUpdate = async () => {
     if (!name || !location || !email) {
       Alert.alert("Validation Error", "Please fill in all required fields.");
@@ -135,17 +132,6 @@ const ProfileScreen = () => {
     } catch (error) {
       console.error("Error updating profile data", error);
       Alert.alert("Error", "Error updating profile.");
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      Alert.alert("Success", "You have been signed out.");
-      navigation.navigate("Login");
-    } catch (error) {
-      console.error("Error signing out", error);
-      Alert.alert("Error", "Error signing out.");
     }
   };
 
@@ -198,7 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 16,
-    backgroundColor : "#E6F0FA",
+    backgroundColor: "#E6F0FA",
   },
   label: {
     flex: 1,

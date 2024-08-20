@@ -1,21 +1,33 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, StyleSheet, Alert, TouchableOpacity } from "react-native";
+import {
+  View,
+  TextInput,
+  Button,
+  Text,
+  StyleSheet,
+  Alert,
+  TouchableOpacity,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { auth } from "../firebase/firebaseSetups";
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { getFromDB } from "../firebase/firebaseHelpers";
-import { useFonts, Inter_900Black } from '@expo-google-fonts/inter';
-import Feather from '@expo/vector-icons/Feather';
+import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
+import Feather from "@expo/vector-icons/Feather";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordWarning, setPasswordWarning] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false); 
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigation = useNavigation();
   const [fontsLoaded] = useFonts({ Inter_900Black });
 
   const handleLogin = async () => {
+    await auth.signOut();
     if (password.length < 6) {
       setPasswordWarning("Weak password. Use at least 6 characters.");
       return;
@@ -25,16 +37,28 @@ const LoginScreen = () => {
 
     // Sign in the user with Firebase Authentication
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
       // Check if the user profile is complete
       const userData = await getFromDB(user.uid, "users");
-      if (userData && userData.addressDisplay && userData.name && userData.email) {
+      if (
+        userData &&
+        userData.addressDisplay &&
+        userData.name &&
+        userData.email
+      ) {
         Alert.alert("Success", "User logged in successfully");
         navigation.navigate("Main");
       } else {
-        Alert.alert("Profile Incomplete", "Please complete your profile first.");
+        Alert.alert(
+          "Profile Incomplete",
+          "Please complete your profile first."
+        );
         navigation.navigate("Profile");
       }
     } catch (error) {
@@ -45,7 +69,7 @@ const LoginScreen = () => {
           message = "The user account has been disabled by an administrator.";
           break;
         case "auth/user-not-found":
-          message = "Account does not exist"; 
+          message = "Account does not exist";
           break;
         case "auth/wrong-password":
           message = "The password is invalid for the given email.";
@@ -64,7 +88,10 @@ const LoginScreen = () => {
   // Function to handle password reset via email
   const handlePasswordReset = async () => {
     if (!email) {
-      Alert.alert("Attention", "Please enter your email to reset the password.");
+      Alert.alert(
+        "Attention",
+        "Please enter your email to reset the password."
+      );
       return;
     }
 
@@ -73,7 +100,7 @@ const LoginScreen = () => {
       Alert.alert("Success", "Password reset email sent.");
     } catch (error) {
       if (error.code === "auth/user-not-found") {
-        Alert.alert("Error", "Account does not exist"); 
+        Alert.alert("Error", "Account does not exist");
       } else {
         Alert.alert("Error", error.message);
       }
@@ -100,12 +127,19 @@ const LoginScreen = () => {
         <TextInput
           style={styles.input}
           placeholder="Password"
-          secureTextEntry={!isPasswordVisible} 
+          secureTextEntry={!isPasswordVisible}
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.icon}>
-          <Feather name={isPasswordVisible ? "eye-off" : "eye"} size={24} color="black" />
+        <TouchableOpacity
+          onPress={togglePasswordVisibility}
+          style={styles.icon}
+        >
+          <Feather
+            name={isPasswordVisible ? "eye-off" : "eye"}
+            size={24}
+            color="black"
+          />
         </TouchableOpacity>
       </View>
       {passwordWarning ? (
@@ -132,7 +166,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 50,
-    fontFamily: 'Inter_900Black',
+    fontFamily: "Inter_900Black",
     marginBottom: 24,
     color: "#1E90FF",
   },
