@@ -21,13 +21,24 @@ https://docs.google.com/presentation/d/1VbsEOHozrT9_s2OrqqinCqF1L0ODcfVpq0p4-fF0
 https://youtu.be/cJoJIx9irjw 
 
 
+## These functionalities are added in this iteration3:
+- **Authentication**:  1. Added textContentType attribute for password text input. 2. Added Welcome screen providing information about the app there to encourage new users to sign up.
+- **Notification**: Enabled petcare provider who has recieved order to schedule local notification as reminders for order start day.
+
+## These functionalities are added in this iteration2:
+- **Authentication**:  Added forgot password functionality, allowing users to reset their passwords via email. Implemented all other authentication-related functionalities, including password visibility toggling,
+     user registration, and error handling during the authentication process.
+- **Camera use**: Integrated Expo Image Picker to allow users to upload or take profile pictures. Added functionality to store and retrieve profile images from Firebase Storage. Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
+- **Location use**:Implemented location tracking using Expo Location and Google Maps API, Added functionality to display user or provider locations on an interactive map.
+- **External API use**: Google places, change the coordinates to readable address, and GooglePlacesAutocomplete.
+  
+
 ## Data model and Collections
 Our data model consists of the following three collections:
 1. **users** - Stores basic user information such as name, address, email, and location.
 2. **providers** - Stores detailed information about service providers, including experience, services offered, open for work status, and profile image.
 3. **orders** - Stores detailed information about orders, including request content, date, user ID, provider ID, and order status.
-
-
+  
 ## CRUD operations
 
 ### users Collection
@@ -46,17 +57,6 @@ Our data model consists of the following three collections:
 - **Update**: Providers can accept or reject orders, which updates the order status. Clients can also update their orders, such as canceling them.
 - **Delete**: Delete order documents when the order is canceled by the client.
 
-## These functionalities are added in this iteration3:
-- **Authentication**:  1. Added textContentType attribute for password text input. 2. Added Welcome screen providing information about the app there to encourage new users to sign up.
-- **Notification**: Enabled petcare provider who has recieved order to schedule local notification as reminders for order start day.
-
-
-## These functionalities are added in this iteration2:
-- **Authentication**:  Added forgot password functionality, allowing users to reset their passwords via email. Implemented all other authentication-related functionalities, including password visibility toggling,
-     user registration, and error handling during the authentication process.
-- **Camera use**: Integrated Expo Image Picker to allow users to upload or take profile pictures. Added functionality to store and retrieve profile images from Firebase Storage. Developed the ImageManager component to handle image picking and uploading, with permission handling for camera access.
-- **Location use**:Implemented location tracking using Expo Location and Google Maps API, Added functionality to display user or provider locations on an interactive map.
-- **External API use**: Google places, change the coordinates to readable address, and GooglePlacesAutocomplete.
 
 ## Current State of the Application
 We have implemented all 5 functionalities: 
